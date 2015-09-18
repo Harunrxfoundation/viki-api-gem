@@ -19,4 +19,12 @@ describe Viki::VikiSubscription, api: true do
       end
     end
   end
+  describe 'subscription_info' do
+    it '/users/:user_id/subscription_info.json' do
+      stub_api 'users/1u/subscription_info.json', Oj.dump({'key' => 'value'}), {api_version: 'v5', method: 'get'}
+      described_class.subscription_info(user_id: '1u') do |response|
+        expect(response.value['key']).to eq 'value'
+      end
+    end
+  end
 end
