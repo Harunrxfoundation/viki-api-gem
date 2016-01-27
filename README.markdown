@@ -22,6 +22,7 @@ Viki.configure do |c|
   c.app_id = 'your_app_id'
   c.user_ip = -> { 'the IP of your user' }
   c.user_token = -> { 'the token of your user' }
+  c.domain = 'the API domain to use'
 
   # Optional
   c.cache = YOUR_REDIS_INSTANCE
@@ -38,25 +39,28 @@ end
 Configuration
 -------------
 
-* `c.salt` Must contain your salt. Default to `ENV["VIKI_API_SALT"]`. Either in config or using `ENV`, it is **required**.
+* `c.salt` Must contain your application secret. Defaults to `ENV["VIKI_API_SALT"]`. **Required** either explicitly in config, or using `ENV`.
 
-* `c.app_id` Must contain your application id. Default to `ENV["VIKI_API_APP_ID"]`. Either in config or using `ENV`, it is **required**.
+* `c.app_id` Must contain your application id. Defaults to `ENV["VIKI_API_APP_ID"]`. **Required** either explicitly in config, or using `ENV`.
 
 * `c.user_ip` Lambda block returning the IP address of the user. It is put in the header of the requests to the API as `X-FORWARDED-FOR`. **Required**
 
 * `c.user_token` Lambda block returning the session token of the user. **Required**
 
-* `c.logger` Instance of `Logger` you want the gem to use. Default to `Logger.new(STDOUT)`. **Optional**
+* `c.domain` The API host to connect to. E.g. `api.viki.io` **Required** 
 
-* `c.timeout_seconds` Amount of timeout seconds for the requests. If a request takes longer, it will return an error
 
-* `c.timeout_seconds_post` Amount of timeout seconds specifically for POST and PUT request. If a request takes longer, it will return an error
+* `c.logger` Instance of `Logger` you want the gem to use. Defaults to `Logger.new(STDOUT)`. **Optional**
 
-* `c.cache` =  Redis instance where the gem will store cached responses from the API. Default to nil. **Optional**
+* `c.timeout_seconds` Amount of seconds to wait for requests before returning an error. **Optional**
 
-* `c.cache_ns` Namespace for the cache keys stored in Redis. Default to `viki-api-gem-cache`. **Optional**
+* `c.timeout_seconds_post` Amount of seconds to wait for POST and PUT requests before returning an error. **Optional**
 
-*  `c.cache_seconds` Seconds to cache responses from the API. Default to 5. **Optional**
+* `c.cache` =  Redis instance where the gem will store cached responses from the API. Defaults to nil. **Optional**
+
+* `c.cache_ns` Namespace for the cache keys stored in Redis. Defaults to `viki-api-gem-cache`. **Optional**
+
+* `c.cache_seconds` Seconds to cache responses from the API. Defaults to 5. **Optional**
 
 Usage by examples
 -----------------
