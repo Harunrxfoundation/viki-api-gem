@@ -29,7 +29,7 @@ class Viki::Review < Viki::Core::Base
     self.patch({review_id: review_id}.merge(named_path: VOTE_PATCH), body, &block)
   end
 
-  def self.delete_review(review_id, body={}, &block)
-    self.destroy({review_id: review_id}.merge(named_path: DELETE), body, &block)
+  def self.delete_review(review_id, &block)
+    self.destroy({review_id: review_id}.merge(named_path: DELETE), &block)
   end
 end
