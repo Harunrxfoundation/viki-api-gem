@@ -3,6 +3,7 @@ class Viki::Review < Viki::Core::Base
   LANGUAGES = 'languages'
   VOTE_PATCH = 'vote_patch'
   EDIT = 'edit_review'
+  DELETE = 'delete_review'
 
   path '/containers/:container_id/reviews'
   path '/reviews'
@@ -10,6 +11,7 @@ class Viki::Review < Viki::Core::Base
   path '/users/:user_id/reviews'
   path '/reviews/:review_id/votes', name: VOTE_PATCH
   path '/reviews/:review_id', name: EDIT
+  path '/reviews/:review_id', name: DELETE
 
   def self.languages(options = {}, &block)
     self.fetch(options.merge(named_path: LANGUAGES), &block)
@@ -27,7 +29,7 @@ class Viki::Review < Viki::Core::Base
     self.patch({review_id: review_id}.merge(named_path: VOTE_PATCH), body, &block)
   end
 
-  def self.delete_review(review_id, &block)
-    self.destroy({review_id: review_id}, &block)
+  def self.delete_review(review_id, body={}, &block)
+    self.destroy({review_id: review_id}.merge(named_path: DELETE), body, &block)
   end
 end
