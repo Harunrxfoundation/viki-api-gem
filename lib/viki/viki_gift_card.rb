@@ -4,9 +4,7 @@ class Viki::VikiGiftCard < Viki::Core::Base
 
   path '/viki_gift_cards', api_version: 'v5'
   path '/viki_gift_cards/:gift_code', api_version: 'v5'
-  path '/users/:user_id/viki_gift_cards', api_version: 'v5'
-  path '/users/:user_id/viki_gift_cards/:gift_code', api_version: 'v5'
-  path '/users/:user_id/viki_gift_cards/:gift_code/redeem', api_version: 'v5', name: GIFT_CARD_REDEMPTION
+  path '/viki_gift_cards/:gift_code/redeem', api_version: 'v5', name: GIFT_CARD_REDEMPTION
 
   def self.redeem(options = {})
     self.create_sync(options.merge(named_path: GIFT_CARD_REDEMPTION))
