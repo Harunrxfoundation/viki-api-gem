@@ -889,7 +889,7 @@ Viki::Review.update_like(review_id, body) do |r|  # Update the like of the given
   put r.inspect
 end
 
-Viki::Review.delete_like(review_id, body) do |r|  # Delete the like of a given review_id
+Viki::Review.delete_review(review_id, body) do |r|  # Delete the given review_id
   put r.inspect
 end
 
