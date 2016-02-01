@@ -867,6 +867,42 @@ Viki::ReportedUser.fetch do |r|
 end
 ```
 
+* Reviews
+```ruby
+Viki::Review() do |r| # Get a list of reviews
+  put r.inspect
+end
+
+Viki::Review.languages(params) do |r|  # Get the languages of a review, accept user_id or resource_id and user_content_rating as params
+  puts r.inspect
+end
+
+Viki::Review.create_review(resource_id, body) do |r| # Create a review for the given resource_id
+  puts r.inspect
+end
+
+Viki::Review.update_review(review_id, body) do |r|  # Update the given review_id
+  put r.inspect
+end
+
+Viki::Review.update_like(review_id, body) do |r|  # Update the like of the given review_id
+  put r.inspect
+end
+
+Viki::Review.delete_like(review_id, body) do |r|  # Delete the like of a given review_id
+  put r.inspect
+end
+
+Viki::Review(container_id: '123c') do |r| # Get the reivews for the given container
+  put r.inspect
+end
+
+Viki::Review(user_id: '123u') do |r| # Get the reivews made by the given user
+  put r.inspect
+end
+
+```
+
 Testing Tool
 ------------
 
@@ -889,6 +925,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 2.2.14
+  * Support reviews endpoint
 * 2.2.13
   * Support for /related_news endpoint
 * 2.2.12

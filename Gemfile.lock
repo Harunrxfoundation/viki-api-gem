@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    viki-api (2.2.13)
+    viki-api (2.2.14)
       addressable (>= 2.3)
       ethon (= 0.7.1)
       oj (>= 2.0)
