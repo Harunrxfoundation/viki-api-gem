@@ -384,6 +384,7 @@ all_country_codes = Viki::Country.codes
 ```ruby
 italy = Viki::MetaCountry.find('rd')
 all_country_codes = Viki::Country.codes
+```
 
 #### Create a user
 
