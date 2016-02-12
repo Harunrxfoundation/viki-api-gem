@@ -22,6 +22,7 @@ Viki.configure do |c|
   c.app_id = 'your_app_id'
   c.user_ip = -> { 'the IP of your user' }
   c.user_token = -> { 'the token of your user' }
+  c.domain = 'the API domain to use'
 
   # Optional
   c.cache = YOUR_REDIS_INSTANCE
@@ -38,25 +39,28 @@ end
 Configuration
 -------------
 
-* `c.salt` Must contain your salt. Default to `ENV["VIKI_API_SALT"]`. Either in config or using `ENV`, it is **required**.
+* `c.salt` Must contain your application secret. Defaults to `ENV["VIKI_API_SALT"]`. **Required** either explicitly in config, or using `ENV`.
 
-* `c.app_id` Must contain your application id. Default to `ENV["VIKI_API_APP_ID"]`. Either in config or using `ENV`, it is **required**.
+* `c.app_id` Must contain your application id. Defaults to `ENV["VIKI_API_APP_ID"]`. **Required** either explicitly in config, or using `ENV`.
 
 * `c.user_ip` Lambda block returning the IP address of the user. It is put in the header of the requests to the API as `X-FORWARDED-FOR`. **Required**
 
 * `c.user_token` Lambda block returning the session token of the user. **Required**
 
-* `c.logger` Instance of `Logger` you want the gem to use. Default to `Logger.new(STDOUT)`. **Optional**
+* `c.domain` The API host to connect to. E.g. `api.viki.io` **Required** 
 
-* `c.timeout_seconds` Amount of timeout seconds for the requests. If a request takes longer, it will return an error
 
-* `c.timeout_seconds_post` Amount of timeout seconds specifically for POST and PUT request. If a request takes longer, it will return an error
+* `c.logger` Instance of `Logger` you want the gem to use. Defaults to `Logger.new(STDOUT)`. **Optional**
 
-* `c.cache` =  Redis instance where the gem will store cached responses from the API. Default to nil. **Optional**
+* `c.timeout_seconds` Amount of seconds to wait for requests before returning an error. **Optional**
 
-* `c.cache_ns` Namespace for the cache keys stored in Redis. Default to `viki-api-gem-cache`. **Optional**
+* `c.timeout_seconds_post` Amount of seconds to wait for POST and PUT requests before returning an error. **Optional**
 
-*  `c.cache_seconds` Seconds to cache responses from the API. Default to 5. **Optional**
+* `c.cache` =  Redis instance where the gem will store cached responses from the API. Defaults to nil. **Optional**
+
+* `c.cache_ns` Namespace for the cache keys stored in Redis. Defaults to `viki-api-gem-cache`. **Optional**
+
+* `c.cache_seconds` Seconds to cache responses from the API. Defaults to 5. **Optional**
 
 Usage by examples
 -----------------
@@ -380,6 +384,7 @@ all_country_codes = Viki::Country.codes
 ```ruby
 italy = Viki::MetaCountry.find('rd')
 all_country_codes = Viki::Country.codes
+```
 
 #### Create a user
 
@@ -477,7 +482,7 @@ Viki::Session.fetch(token: user_token) do |response|
 end
 ```
 
-_The gem will throw Viki::Core::ErrorResponse in case of invalid token, instead of return error object as in other methods_
+_Note that a Viki::Core::ErrorResponse will be raised if the token is invalid. This is unlike other methods, which return an error object on failure._
 
 #### Send reset password
 
@@ -834,15 +839,15 @@ Viki::List.update_sync({id: '1b'} {type: "container", resource_id: '1c'})
 ```ruby
 Viki::List.destroy_sync({id: '1b'})
 ```
-=======
-* Contributor's count
+
+#### Contributor's count
 ```ruby
 Viki::Contributor.fetch_count(user_id: '1u') do |r|
   puts r.inspect
 end
 ```
 
-* Contributor's meta info
+#### Contributor's meta info
 ```ruby
 Viki::Contributor.fetch_meta(user_id: '1u') do |r|
   puts r.inspect
@@ -853,54 +858,77 @@ Viki::Contributor.update_meta(user_id: '1u', languages: 'ja,en') do |r|
 end
 ```
 
-* Container years
+#### Container years
 ```ruby
 Viki::Year.fetch do |r|
   puts r.inspect
 end
 ```
 
-* Reported users
+#### Reported users
 ```ruby
 Viki::ReportedUser.fetch do |r|
   puts r.inspect
 end
 ```
 
-* Reviews
+### Reviews
+#### Get a list of Reviews
 ```ruby
-Viki::Review() do |r| # Get a list of reviews
+Viki::Review() do |r|
   put r.inspect
 end
+```
 
+#### Get the languages of a Review
+This method accepts `user_id`, `resource_id`, and `user_content_rating` as parameters.
+
+```ruby
 Viki::Review.languages(params) do |r|  # Get the languages of a review, accept user_id or resource_id and user_content_rating as params
   puts r.inspect
 end
+```
 
-Viki::Review.create_review(resource_id, body) do |r| # Create a review for the given resource_id
+#### Create a Review
+```
+Viki::Review.create_review(resource_id, body) do |r|
   puts r.inspect
 end
+```
 
-Viki::Review.update_review(review_id, body) do |r|  # Update the given review_id
+#### Update a Review
+```ruby
+Viki::Review.update_review(review_id, body) do |r|
   put r.inspect
 end
+```
 
-Viki::Review.update_like(review_id, body) do |r|  # Update the like of the given review_id
+#### Update a Review's like
+```ruby
+Viki::Review.update_like(review_id, body) do |r|
   put r.inspect
 end
+```
 
-Viki::Review.delete_review(review_id, body) do |r|  # Delete the given review_id
+#### Delete a Review
+```ruby
+Viki::Review.delete_review(review_id, body) do |r|
   put r.inspect
 end
+```
 
-Viki::Review(container_id: '123c') do |r| # Get the reivews for the given container
+#### Get Reviews for a Container
+```ruby
+Viki::Review(container_id: '123c') do |r|
   put r.inspect
 end
+```
 
-Viki::Review(user_id: '123u') do |r| # Get the reivews made by the given user
+#### Get Reviews by a User
+```ruby
+Viki::Review(user_id: '123u') do |r|
   put r.inspect
 end
-
 ```
 
 Testing Tool
