@@ -482,7 +482,7 @@ Viki::Session.fetch(token: user_token) do |response|
 end
 ```
 
-_The gem will throw Viki::Core::ErrorResponse in case of invalid token, instead of return error object as in other methods_
+_Note that a Viki::Core::ErrorResponse will be raised if the token is invalid. This is unlike other methods, which return an error object on failure._
 
 #### Send reset password
 
@@ -839,15 +839,15 @@ Viki::List.update_sync({id: '1b'} {type: "container", resource_id: '1c'})
 ```ruby
 Viki::List.destroy_sync({id: '1b'})
 ```
-=======
-* Contributor's count
+
+#### Contributor's count
 ```ruby
 Viki::Contributor.fetch_count(user_id: '1u') do |r|
   puts r.inspect
 end
 ```
 
-* Contributor's meta info
+#### Contributor's meta info
 ```ruby
 Viki::Contributor.fetch_meta(user_id: '1u') do |r|
   puts r.inspect
@@ -858,54 +858,77 @@ Viki::Contributor.update_meta(user_id: '1u', languages: 'ja,en') do |r|
 end
 ```
 
-* Container years
+#### Container years
 ```ruby
 Viki::Year.fetch do |r|
   puts r.inspect
 end
 ```
 
-* Reported users
+#### Reported users
 ```ruby
 Viki::ReportedUser.fetch do |r|
   puts r.inspect
 end
 ```
 
-* Reviews
+### Reviews
+#### Get a list of Reviews
 ```ruby
-Viki::Review() do |r| # Get a list of reviews
+Viki::Review() do |r|
   put r.inspect
 end
+```
 
+#### Get the languages of a Review
+This method accepts `user_id`, `resource_id`, and `user_content_rating` as parameters.
+
+```ruby
 Viki::Review.languages(params) do |r|  # Get the languages of a review, accept user_id or resource_id and user_content_rating as params
   puts r.inspect
 end
+```
 
-Viki::Review.create_review(resource_id, body) do |r| # Create a review for the given resource_id
+#### Create a Review
+```
+Viki::Review.create_review(resource_id, body) do |r|
   puts r.inspect
 end
+```
 
-Viki::Review.update_review(review_id, body) do |r|  # Update the given review_id
+#### Update a Review
+```ruby
+Viki::Review.update_review(review_id, body) do |r|
   put r.inspect
 end
+```
 
-Viki::Review.update_like(review_id, body) do |r|  # Update the like of the given review_id
+#### Update a Review's like
+```ruby
+Viki::Review.update_like(review_id, body) do |r|
   put r.inspect
 end
+```
 
-Viki::Review.delete_review(review_id, body) do |r|  # Delete the given review_id
+#### Delete a Review
+```ruby
+Viki::Review.delete_review(review_id, body) do |r|
   put r.inspect
 end
+```
 
-Viki::Review(container_id: '123c') do |r| # Get the reivews for the given container
+#### Get Reviews for a Container
+```ruby
+Viki::Review(container_id: '123c') do |r|
   put r.inspect
 end
+```
 
-Viki::Review(user_id: '123u') do |r| # Get the reivews made by the given user
+#### Get Reviews by a User
+```ruby
+Viki::Review(user_id: '123u') do |r|
   put r.inspect
 end
-
 ```
 
 Testing Tool
