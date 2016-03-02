@@ -931,6 +931,14 @@ Viki::Review(user_id: '123u') do |r|
 end
 ```
 
+#### Get Featured Channels 
+```ruby
+Viki::FeaturedChannel() do |r|
+  put r.inspect
+end
+
+
+
 Testing Tool
 ------------
 
@@ -953,6 +961,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 2.2.15
+  * Support for /featured_channel endpoint
 * 2.2.14
   * Support reviews endpoint
 * 2.2.13
