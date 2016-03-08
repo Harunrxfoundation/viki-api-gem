@@ -8,8 +8,8 @@ describe Viki::WatchMarker, api: true do
     described_class.fetch(id: '1u') { |res| watch_markers = res.value }
     Viki.run
     
-    watch_markers.should be_a_kind_of(Hash)
-    watch_markers["markers"].should be_a_kind_of(Array) 
+    watch_markers["markers"].should be_a_kind_of(Array)
+    watch_markers["markers"][0]["video_id"].should eq "1073616v"
   end 
 
   it 'fetches list from given timestamp' do
