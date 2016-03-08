@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Viki::WatchMarker, api: true do
-  it 'fetches list of watch markers' do
+  it 'should fetch list of watch markers' do
     stub_api 'users/1u/watch_markers.json', json_fixture(:watch_marker), api_version: 'v4'
     
     watch_markers = nil
@@ -12,7 +12,7 @@ describe Viki::WatchMarker, api: true do
     watch_markers["markers"][0]["video_id"].should eq "1073616v"
   end 
 
-  it 'fetches list from given timestamp' do
+  it 'should fetch list with given timestamp' do
     stub_api 'users/1u/watch_markers.json', json_fixture(:watch_marker), api_version: 'v4'
     
     watch_markers = nil
