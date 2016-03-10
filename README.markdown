@@ -966,6 +966,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 2.2.16
+  * Support for /users/:user_id/watch_markers endpoint
 * 2.2.15
   * Support for /featured_channel endpoint
 * 2.2.14
