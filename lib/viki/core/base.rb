@@ -123,11 +123,11 @@ module Viki::Core
         response
       end
 
-      def destroy(url_options = {}, &block)
+      def destroy(url_options = {}, body = nil, &block)
         format = get_format(url_options)
         uri = signed_uri(url_options.dup)
         Viki.logger.debug "#{self.name} destroying to the API: #{uri}"
-        destroyer = Viki::Core::Destroyer.new(uri, nil, format)
+        destroyer = Viki::Core::Destroyer.new(uri, body, format)
         destroyer.queue &block
         destroyer
       end
