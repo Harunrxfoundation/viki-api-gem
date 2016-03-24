@@ -208,9 +208,10 @@ describe Viki::Core::Base do
       uri = double
       options = double
       options.should_receive(:[]).with(:format).and_return "json"
-      test_klass.should_receive(:signed_uri).with(options) { uri }
-      Viki::Core::Destroyer.should_receive(:new).with(uri, nil, "json") { double :queue => nil }
-      test_klass.destroy(options) do
+      body = double.as_null_object
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Destroyer.should_receive(:new).with(uri, body, "json") { double :queue => nil }
+      test_klass.destroy(options, body) do
       end
     end
   end
