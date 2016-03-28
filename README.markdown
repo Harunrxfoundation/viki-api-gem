@@ -517,6 +517,19 @@ end
 ```
 See http://dev.viki.com/v4/activities/ for type params details
 
+#### Delete user activities
+
+```ruby
+body = {
+  reset: false,
+  watch: ['1v', '2v'] 
+}
+Viki::Activity.delete_activity(user_id: user_id, body) do | response |
+  puts response.inspect
+end
+```
+
+
 #### Private message
 
 ```ruby
@@ -968,6 +981,7 @@ Changelog
 ---------
 * 2.2.16
   * Support for /users/:user_id/watch_markers endpoint
+  * Support for DELETE /users/:user_id/activities endpoint
 * 2.2.15
   * Support for /featured_channel endpoint
 * 2.2.14
