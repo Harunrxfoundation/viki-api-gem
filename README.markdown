@@ -47,7 +47,7 @@ Configuration
 
 * `c.user_token` Lambda block returning the session token of the user. **Required**
 
-* `c.domain` The API host to connect to. E.g. `api.viki.io` **Required** 
+* `c.domain` The API host to connect to. E.g. `api.viki.io` **Required**
 
 
 * `c.logger` Instance of `Logger` you want the gem to use. Defaults to `Logger.new(STDOUT)`. **Optional**
@@ -944,7 +944,7 @@ Viki::Review(user_id: '123u') do |r|
 end
 ```
 
-#### Get Featured Channels 
+#### Get Featured Channels
 ```ruby
 Viki::FeaturedChannel() do |r|
   put r.inspect
@@ -979,9 +979,11 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
-* 2.2.16
+* 2.2.17
   * Support for /users/:user_id/watch_markers endpoint
   * Support for DELETE /users/:user_id/activities endpoint
+* 2.2.16
+  * Support for v5 subscription engine.
 * 2.2.15
   * Support for /featured_channel endpoint
 * 2.2.14
