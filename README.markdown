@@ -961,6 +961,10 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 3.0.0
+  * Adminstrative version bump as 2.2.16 is not backward compatible
+  * Deprecate GiftCard endpoint for VikiGiftCard endpoint
+  * Subscription endpoint moves to VikiSubscription
 * 2.2.16
   * Support for v5 subscription engine.
 * 2.2.15
