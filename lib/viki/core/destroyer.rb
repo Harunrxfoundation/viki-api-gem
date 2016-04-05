@@ -6,6 +6,7 @@ module Viki::Core
 
     def request
       @request ||= Typhoeus::Request.new url,
+                                         body: body,
                                          headers: default_headers,
                                          method: "delete",
                                          # forbid_reuse: true,

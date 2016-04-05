@@ -517,6 +517,19 @@ end
 ```
 See http://dev.viki.com/v4/activities/ for type params details
 
+#### Delete user activities
+
+```ruby
+body = {
+  reset: false,
+  watch: ['1v', '2v'] 
+}
+Viki::Activity.delete_activity(user_id: user_id, body) do | response |
+  puts response.inspect
+end
+```
+
+
 #### Private message
 
 ```ruby
@@ -937,6 +950,11 @@ Viki::FeaturedChannel() do |r|
   put r.inspect
 end
 
+#### Get Watch Markers
+```ruby
+Viki::WatchMarker(user_id: '1u', from: 1455950940) do |r|
+  put r.inspect
+end
 
 
 Testing Tool
@@ -961,6 +979,9 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 3.0.1
+  * Support for /users/:user_id/watch_markers endpoint
+  * Support for DELETE /users/:user_id/activities endpoint
 * 3.0.0
   * Adminstrative version bump as 2.2.16 is not backward compatible
   * Deprecate GiftCard endpoint for VikiGiftCard endpoint
