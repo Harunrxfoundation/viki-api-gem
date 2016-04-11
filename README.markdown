@@ -949,13 +949,14 @@ end
 Viki::FeaturedChannel() do |r|
   put r.inspect
 end
+```
 
 #### Get Watch Markers
 ```ruby
 Viki::WatchMarker(user_id: '1u', from: 1455950940) do |r|
   put r.inspect
 end
-
+```
 
 Testing Tool
 ------------
