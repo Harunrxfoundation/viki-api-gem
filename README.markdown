@@ -613,10 +613,10 @@ end
 #### Timed Comments
 
 ```ruby
-Viki::TimedComment.fetch(video_id: "44699v", language: "en") do |response|
+Viki::TimedComment.fetch(id: "44699v", language: "en") do |response|
   puts response.inspect  # SRT format
 end
-Viki::TimedComment.destroy(video_id: "44699v", timed_comment_id: "42tc") do |response|
+Viki::TimedComment.destroy(id: "44699v", timed_comment_id: "42tc") do |response|
   puts response.inspect  # JSON format
 end
 ```
