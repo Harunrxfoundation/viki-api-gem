@@ -7,7 +7,6 @@ describe Viki::List, api: true do
       video = response.value
       video.should be_a_kind_of(Array)
     end
-    Viki.run
   end
 
   it "creates list" do

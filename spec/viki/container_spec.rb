@@ -15,7 +15,6 @@ describe Viki::Container, api: true do
       expect(video.keys).to include('verticals')
       expect(video.keys).to include('paywall')
     end
-    Viki.run
   end
 
   it "fetches recommendations for container" do

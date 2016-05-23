@@ -6,7 +6,6 @@ describe Viki::Genre, api: true do
     described_class.fetch(resource: "movies") do |response|
       response.value.should be_a_kind_of(Array)
     end
-    Viki.run
   end
 
   it "fetches series genres" do
@@ -14,7 +13,6 @@ describe Viki::Genre, api: true do
     described_class.fetch(resource: "series") do |response|
       response.value.should be_a_kind_of(Array)
     end
-    Viki.run
   end
 
   it "fetches music_videos genres" do
@@ -22,6 +20,5 @@ describe Viki::Genre, api: true do
     described_class.fetch(resource: "music_videos") do |response|
       response.value.should be_a_kind_of(Array)
     end
-    Viki.run
   end
 end

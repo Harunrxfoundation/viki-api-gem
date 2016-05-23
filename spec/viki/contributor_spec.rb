@@ -6,7 +6,6 @@ describe Viki::Contributor, api: true do
     described_class.fetch_count(user_id: "1") do |res|
       res.error.should be_nil
     end
-    Viki.run
   end
 
   it 'fetches contributor\'s meta' do
@@ -14,7 +13,6 @@ describe Viki::Contributor, api: true do
     described_class.fetch_meta(user_id: '1') do |res|
       res.error.should be_nil
     end
-    Viki.run
   end
 
   it 'updates contributor\'s meta' do
@@ -22,6 +20,5 @@ describe Viki::Contributor, api: true do
     described_class.update_meta(user_id: '1', latest_tutorial_step: 'welcome') do |res|
       res.error.should be_nil
     end
-    Viki.run
   end
 end

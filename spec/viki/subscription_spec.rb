@@ -46,7 +46,6 @@ describe Viki::Subscription, api: true do
       stub_api 'containers/1c/subscriptions.json', 'some_data'
       expect {
         described_class.fetch(container_id: "1c")
-        Viki.run
       }.to raise_error(Viki::Core::Base::InsufficientOptions)
     end
   end
