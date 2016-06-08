@@ -55,4 +55,13 @@ describe Viki::VikiCoupon do
       end
     end
   end
+  describe 'verify coupons' do
+    it 'viki_coupons/coupon_codes/:coupon_code' do |variable|
+      stub_api 'viki_coupons/coupon_codes/khaleesi.json', Oj.dump([{'id' => "1vc", "name" => "khaleesi"}]), {api_version: 'v5', method: 'get'}
+      described_class.fetch(viki_coupon_code: 'khaleesi') do |response|
+        res = response.value.first
+        expect(res['name']).to eq 'khaleesi'
+      end
+    end
+  end
 end

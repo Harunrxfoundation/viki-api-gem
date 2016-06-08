@@ -980,6 +980,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 3.0.2
+  * Support to verify Viki Pass coupon code through /viki_coupons/coupon_codes/:viki_coupon_code endpoint
 * 3.0.1
   * Support for /users/:user_id/watch_markers endpoint
   * Support for DELETE /users/:user_id/activities endpoint
