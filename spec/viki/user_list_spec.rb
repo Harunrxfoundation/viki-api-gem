@@ -43,7 +43,7 @@ describe Viki::UserList, api: true do
   end
 
   it 'create list' do # POST
-    request = stub_api 'user-lists.json', nil, method: :post, https: true,response_code: 201
+    request = stub_api 'user-lists.json', nil, method: :post, https: true, response_code: 201
 
     described_class.create({}, list_json) { |response| }
     Viki.run
