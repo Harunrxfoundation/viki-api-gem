@@ -454,6 +454,40 @@ Viki::UserAbout.fetch(user_id: user_id) do |response|
 end
 ```
 
+### User List
+
+#### Fetch all lists created by users
+
+```ruby
+Viki::UserList.fetch do |response|
+  puts response.inspect
+end
+```
+
+#### Fetch user list
+
+```ruby
+Viki::UserList.fetch(list_id: list_id) do |response|
+  puts response.inspect
+end
+```
+
+#### Create user list
+
+```ruby
+Viki::UserList.create({}, list_json) do |response|
+  puts response.inspect
+end
+```
+
+#### Delete a user list
+
+```ruby
+Viki::UserList.destroy(list_id: list_id) do |response|
+  puts response.inspect
+end
+```
+
 #### Login
 
 ```ruby
@@ -522,7 +556,7 @@ See http://dev.viki.com/v4/activities/ for type params details
 ```ruby
 body = {
   reset: false,
-  watch: ['1v', '2v'] 
+  watch: ['1v', '2v']
 }
 Viki::Activity.delete_activity(user_id: user_id, body) do | response |
   puts response.inspect
