@@ -22,14 +22,15 @@ describe Viki::UserListItem, api: true do
     }
   }
 
-  it 'adds an element to the end of the list' do
-    stub_api 'user-lists/1l/items.json', nil, method: :post, https: true
+  it 'adds an element to the end of the list' do # PATCH
+    stub_api 'user-lists/1l/items.json', nil, method: :patch, https: true
 
-    described_class.create(list_id: '1l', item_json) do |response|
+    described_class.patch({list_id: '1l'}, item_json) do |response|
       response.error.should be_nil
     end
   end
 
-  it 'removes an element from a list' do # POST
+  it 'removes an element from a list' do # DELETE
   end
 end
+
