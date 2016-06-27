@@ -31,6 +31,11 @@ describe Viki::UserListItem, api: true do
   end
 
   it 'removes an element from a list' do # DELETE
+    stub_api 'user-lists/1l/items.json', nil, method: :delete, https: true
+
+    described_class.destroy({list_id: '1l', resources: ['1c', '2c']}, item_json) do |response|
+      response.error.should be_nil
+     end
   end
 end
 

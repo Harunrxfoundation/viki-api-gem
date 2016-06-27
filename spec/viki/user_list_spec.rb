@@ -71,4 +71,14 @@ describe Viki::UserList, api: true do
       response.error.should be_nil
     end
   end
+
+  describe '#order' do
+    it 'orders the items in the list' do # PATCH
+      stub_api 'user-lists/1l.json', nil, method: :patch, https: true
+
+      described_class.order(list_id: '1l', ids: ['3l', '2l', '1l']) do |response|
+        response.error.should be_nil
+      end
+    end
+  end
 end
