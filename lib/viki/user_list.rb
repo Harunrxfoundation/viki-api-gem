@@ -1,6 +1,7 @@
 class Viki::UserList < Viki::Core::Base
   use_ssl
   cacheable
+  path "/users/:user_id/user-lists"
   path "/user-lists"
   path "/user-lists/:list_id"
 
