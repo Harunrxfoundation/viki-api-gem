@@ -15,7 +15,6 @@ describe Viki::Holdback, api: true do
     stub_api 'holdbacks.json', "some_data"
     expect {
       described_class.fetch(group_ids: "1", user_ids: "1u", resource_id: "1r")
-      Viki.run
     }.to raise_error(Viki::Core::Base::InsufficientOptions)
   end
 end

@@ -7,7 +7,6 @@ describe Viki::ResetPasswordToken, api: true do
     described_class.forgot_password!('admin@example.com') do |r|
       r.should == response
     end
-    Viki.run
   end
 
   it "resets the password" do
@@ -20,7 +19,6 @@ describe Viki::ResetPasswordToken, api: true do
     described_class.reset_password!('12345', 'pass', 'pass_conf') do |r|
       r.should == response
     end
-    Viki.run
   end
 
 end
