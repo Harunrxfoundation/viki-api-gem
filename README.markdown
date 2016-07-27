@@ -1014,6 +1014,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 3.0.3
+  * Support for user-list and flags endpoint
 * 3.0.2
   * Support to verify Viki Pass coupon code through /viki_coupons/coupon_codes/:viki_coupon_code endpoint
 * 3.0.1
