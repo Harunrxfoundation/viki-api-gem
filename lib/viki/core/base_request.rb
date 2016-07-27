@@ -54,7 +54,7 @@ module Viki::Core
     end
 
     def log(url, res = nil)
-      if res != nil 
+      if res != nil
         Viki.logger.info "[API Request] [Responded] [#{Viki.user_ip[]}] #{url} #{res.time}s"
       else
         Viki.logger.info "[API Request] [Cacheable] [#{Viki.user_ip[]}] #{url}"
