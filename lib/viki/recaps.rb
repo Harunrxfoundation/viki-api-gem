@@ -3,7 +3,7 @@ class Viki::Recaps < Viki::Core::Base
   EDIT = 'update_recap'
   DELETE = 'delete_recap'
 
-  path '/videos/:video_id/', api_version: "v4"
+  path '/videos/:video_id/recaps', api_version: "v4"
   path '/videos/:video_id/recaps/:recap_id', api_version: "v4", name: EDIT
   path '/videos/:video_id/recaps/:recap_id', api_version: "v4", name: DELETE
 
