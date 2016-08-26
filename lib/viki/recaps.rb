@@ -3,19 +3,19 @@ class Viki::Recaps < Viki::Core::Base
   EDIT = 'update_recap'
   DELETE = 'delete_recap'
 
-  path '/videos/:video_id/recaps', api_version: "v4"
-  path '/videos/:video_id/recaps/:recap_id', api_version: "v4", name: EDIT
-  path '/videos/:video_id/recaps/:recap_id', api_version: "v4", name: DELETE
+  path '/recaps', api_version: "v4"
+  path '/recaps/:recap_id', api_version: "v4", name: EDIT
+  path '/recaps/:recap_id', api_version: "v4", name: DELETE
 
-  def self.create_recap(video_id, body = {}, &block)
-    self.create({video_id: video_id}, body, &block)
+  def self.create_recap(body = {}, &block)
+    self.create({}, body, &block)
   end
 
-  def self.update_recap(video_id, recap_id, body = {}, &block)
-    self.patch({video_id: video_id, recap_id: recap_id}.merge(named_path: EDIT), body, &block)
+  def self.update_recap(recap_id, body = {}, &block)
+    self.patch({recap_id: recap_id}.merge(named_path: EDIT), body, &block)
   end
 
-  def self.delete_recap(video_id, recap_id, &block)
-    self.destroy({video_id: video_id, recap_id: recap_id}.merge(named_path: DELETE), &block)
+  def self.delete_recap(recap_id, &block)
+    self.destroy({recap_id: recap_id}.merge(named_path: DELETE), &block)
   end
 end
