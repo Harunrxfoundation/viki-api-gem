@@ -864,6 +864,7 @@ end
 Viki::ListAlias.create(list_id: '1l', name: 'alias_for_1l') |r|   # create an alias for the list
   puts r.inspect
 end
+```
 
 ### Bricks
 
@@ -919,6 +920,35 @@ Viki::ReportedUser.fetch do |r|
 end
 ```
 
+### Recaps
+#### Get a list of Recaps
+```ruby
+Viki::Recaps.fetch(video_id: '44699v', language: 'en', source: 'all') do |r|
+  put r.inspect
+end
+```
+
+#### Create a Recap
+```ruby
+Viki::Recaps.create_recap(body) do |r|
+  puts r.inspect
+end
+```
+
+#### Update a Recap
+```ruby
+Viki::Recaps.update_recap(recap_id, body) do |r|
+  puts r.inspect
+end
+```
+
+#### Delete a Recap
+```ruby
+Viki::Recaps.delete_recap(recap_id, body) do |r|
+  puts r.inspect
+end
+```
+
 ### Reviews
 #### Get a list of Reviews
 ```ruby
@@ -937,7 +967,7 @@ end
 ```
 
 #### Create a Review
-```
+```ruby
 Viki::Review.create_review(resource_id, body) do |r|
   puts r.inspect
 end
@@ -1014,6 +1044,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 3.0.4
+  * Support for recaps endpoint
 * 3.0.3
   * Support for user-list and flags endpoint
 * 3.0.2
