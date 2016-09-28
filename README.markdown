@@ -1044,6 +1044,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 3.0.5
+  * Support for recaps endpoint
 * 3.0.4
   * Support apply_coupon endpoint on VikiSubscription
 * 3.0.3
