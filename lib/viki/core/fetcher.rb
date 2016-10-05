@@ -24,7 +24,7 @@ module Viki::Core
           log_json(Oj.dump({level: 'error', error: "Could not parse json with body #{@body.to_s}"}, mode: :compat))
         end
         if parsed_body
-          block.call Viki::Core::Response.new(nil, get_content(parsed_body), self)
+          block.call Viki::Core::Response.new(nil, get_content(parsed_body), self, parsed_body)
         else
           error = Viki::Core::ErrorResponse.new(body, 0, url)
           Viki.logger.error(error.to_s)
@@ -56,7 +56,7 @@ module Viki::Core
             end
             Viki.cache.setex(cache_key(url), cacheSeconds, Oj.dump(body, mode: :compat))
           end
-          block.call Viki::Core::Response.new(nil, get_content(body), self)
+          block.call Viki::Core::Response.new(nil, get_content(body), self, body)
         else
           error = Viki::Core::ErrorResponse.new(body, 0, url)
           Viki.logger.error(error.to_s)
