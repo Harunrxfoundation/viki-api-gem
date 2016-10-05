@@ -17,6 +17,12 @@ describe Viki::Core::Fetcher do
       end
     end
 
+    it "includes raw API response in response object" do
+      fetcher.queue do |response|
+        expect(response.raw).to eq content
+      end
+    end
+
     it "sends the user IP as X-FORWARDED-FOR" do
       Viki.stub(:user_ip) { lambda { "1.2.3.4" } }
       fetcher.queue do
@@ -38,6 +44,12 @@ describe Viki::Core::Fetcher do
           error.error.should == "an error occurred"
           error.vcode.should == 123
           error.url.should == "http://example.com/path"
+        end
+      end
+
+      it 'does not include API response as raw attribute in response object' do
+        fetcher.queue do |response|
+          expect(response.raw).to be_nil
         end
       end
     end
@@ -82,6 +94,12 @@ describe Viki::Core::Fetcher do
           Viki.run
           fetcher.more.should === true
           fetcher.count.should == 10
+        end
+
+        it 'includes raw API response in response object' do
+          fetcher.queue do |response|
+            expect(response.raw).to eq content
+          end
         end
       end
     end
