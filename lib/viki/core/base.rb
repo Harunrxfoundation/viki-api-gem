@@ -155,6 +155,22 @@ module Viki::Core
         response
       end
 
+      def put(url_options = {}, body = {}, &block)
+        format = get_format(url_options)
+        uri = signed_uri(url_options.dup, body)
+        Viki.logger.debug "#{self.name} putting to the API: #{uri}"
+        creator = Viki::Core::Putter.new(uri, body, format)
+        creator.queue &block
+        creator
+      end
+
+      def put_sync(url_options = {}, body = {})
+        response = nil
+        put(url_options, body) { |r| response = r }
+        Viki.run
+        response
+      end
+
       private
 
       def get_format(params)
