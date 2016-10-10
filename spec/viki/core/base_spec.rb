@@ -228,4 +228,17 @@ describe Viki::Core::Base do
       end
     end
   end
+
+  describe "#putter" do
+    it "constructs a put request from the signed_uri and the body" do
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Putter.should_receive(:new).with(uri, body, 'json') { double :queue => nil }
+      test_klass.put(options, body) do
+      end
+    end
+  end
 end
