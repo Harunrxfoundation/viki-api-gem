@@ -132,9 +132,9 @@ module Viki::Core
         destroyer
       end
 
-      def destroy_sync(url_options = {})
+      def destroy_sync(url_options = {}, body = {})
         response = nil
-        destroy(url_options) { |r| response = r }
+        destroy(url_options, body) { |r| response = r }
         Viki.run
         response
       end
