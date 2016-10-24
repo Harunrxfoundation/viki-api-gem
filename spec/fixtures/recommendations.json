@@ -1,0 +1,12 @@
+{
+  "count": 1,
+  "more": false,
+  "response": [
+    { "id": "50c",
+      "type": "series",
+       "titles": {
+         "en": "Boys Over Flowers"
+        }
+    }
+  ]
+}
