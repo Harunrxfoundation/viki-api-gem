@@ -49,7 +49,7 @@ module Viki::Core
         params = build_params(params)
         path, params = build_path(params)
         path = "/#{path}.#{params.delete(:format)}"
-        domain = "http#{"s" if @_ssl}://#{params.delete(:manage) == true ? Viki.manage : Viki.domain}"
+        domain = "https://#{params.delete(:manage) == true ? Viki.manage : Viki.domain}"
         uri = Addressable::URI.join(domain, path)
 
         query_values = {}
