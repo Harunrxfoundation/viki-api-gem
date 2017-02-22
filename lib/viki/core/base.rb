@@ -84,6 +84,11 @@ module Viki::Core
         fetcher
       end
 
+      def fetch_signed_uri(url_options = {}, &block)
+        format = get_format(url_options)
+        uri = signed_uri(url_options.dup)
+      end
+
       def fetch_sync(url_options = {})
         response = nil
         fetch(url_options) { |r| response = r }
