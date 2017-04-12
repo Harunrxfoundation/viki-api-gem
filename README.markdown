@@ -192,18 +192,6 @@ Viki::Stream.fetch(video_id: '44699v') do |response|
 end
 ```
 
-#### Fetch hardsub streams for a video
-
-```ruby
-Viki::HardsubStream.fetch(video_id: '44699v') do |response|
-  puts response.inspect
-end
-
-Viki::HardsubStream.fetch(video_id: '44699v', language: 'en') do |response|
-  puts response.inspect
-end
-```
-
 #### Creates a master video
 
 ```ruby
@@ -1044,6 +1032,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 4.0.0
+  * Remove hardsub support
 * 3.0.6
   * Support for Vikipass apply coupon endpoint
 * 3.0.5
