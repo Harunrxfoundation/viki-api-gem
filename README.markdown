@@ -1032,8 +1032,10 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
-* 3.0.6
+* 4.0.0
   * Remove hardsub support
+* 3.0.6
+  * Support for Vikipass apply coupon endpoint
 * 3.0.5
   * Support for recaps endpoint
 * 3.0.4
