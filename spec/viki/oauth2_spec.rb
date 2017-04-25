@@ -9,6 +9,14 @@ describe Viki::OAuth2, api: true do
     stub.should have_been_made
   end
 
+  it "sends out a GET request for authorizing client and retrieving credentials" do
+    stub = stub_request('get', %r{.*/oauth/authorize.*})
+
+    described_class.precheck_client({}) do
+    end
+    stub.should have_been_made
+  end
+
   it "sends out a GET request for verifying client" do
     stub = stub_request('get', %r{.*/oauth/applications/uids/123.*})
 
