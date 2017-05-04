@@ -135,6 +135,19 @@ describe Viki::Core::Base do
     its(:query_values) { should have_key("sig") }
   end
 
+  describe "#get_signed_uri" do
+    let(:uri) { Addressable::URI.parse "http://example.com" }
+    let(:body) { "" }
+
+    it 'makes sure input params\' values are preserved' do
+      backup_params = { secret: 'meh' }
+      curr_params = { secret: 'meh' }
+      
+      url = test_klass.get_signed_uri(curr_params)
+      curr_params.should == backup_params
+    end
+  end
+
   describe "#signed_uri override" do
     it 'uses the provided secret' do
       double = double('signer')
