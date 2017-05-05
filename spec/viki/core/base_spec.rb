@@ -137,14 +137,20 @@ describe Viki::Core::Base do
 
   describe "#get_signed_uri" do
     let(:uri) { Addressable::URI.parse "http://example.com" }
-    let(:body) { "" }
+    let(:original_params) { { secret: 'meh' } }
+    let(:input_params) { original_params.dup }
 
-    it 'makes sure input params\' values are preserved' do
-      backup_params = { secret: 'meh' }
-      curr_params = { secret: 'meh' }
-      
-      url = test_klass.get_signed_uri(curr_params)
-      curr_params.should == backup_params
+    def subject
+      test_klass.get_signed_uri(input_params)
+    end
+
+    it "makes sure input params' values are preserved" do
+      subject
+      input_params.should == original_params
+    end
+
+    it 'returns the same url as it passed to #signed_uri' do
+      subject.should == test_klass.signed_uri(input_params)
     end
   end
 
