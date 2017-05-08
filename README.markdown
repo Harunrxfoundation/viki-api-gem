@@ -1058,6 +1058,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 4.0.1
+  * Support for property verification endpoint
 * 4.0.0
   * Remove hardsub support
 * 3.0.6
