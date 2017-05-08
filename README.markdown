@@ -442,6 +442,32 @@ Viki::UserAbout.fetch(user_id: user_id) do |response|
 end
 ```
 
+### User Email Verification
+
+#### Verify a user email
+
+```ruby
+Viki::UserPropertyVerify.verify_token(user_id, {property: 'email', verification_token: verification_token}) do |response|
+  puts response.inspect
+end
+```
+
+#### Resend user verification token when user is not logged in
+
+```ruby
+Viki::UserPropertyVerify.resend_verification_token(user_id, verification_token, body) do |response|
+  puts response.inspect
+end
+```
+
+#### Resend verification token when user is logged in
+
+```ruby
+Viki::UserPropertyVerify.resend_token(user_id, body) do |response|
+  puts response.inspect
+end
+```
+
 ### User List
 
 #### Fetch all lists created by users
