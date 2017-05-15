@@ -1,14 +1,15 @@
 module Viki::Core
   class BaseRequest
-    attr_reader :url, :body, :cacheable
-
+    attr_reader :url, :body, :headers, :cacheable
+    @@addon_headers = {}
     JSON_FORMAT = "json"
 
-    def initialize(url, body = nil, format=JSON_FORMAT, cache = {})
+    def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {})
       @cacheable = cache
       @url = url.to_s
       @format = format
       @body = body ? Oj.dump(body, mode: :compat) : nil
+      @addon_headers = headers
     end
 
     def queue(&block)
@@ -45,7 +46,8 @@ module Viki::Core
     end
 
     def default_headers(params_hash = {})
-      params_hash.tap do |headers|
+      curr_headers = @@addon_headers.merge(params_hash)
+      curr_headers.tap do |headers|
         headers['User-Agent'] = 'viki'
         headers['Content-Type'] = 'application/json'
         user_ip = Viki.user_ip.call

@@ -5,7 +5,7 @@ describe Viki::Core::Creator do
     let(:body) { {'title' => 'City Hunter'} }
     let(:content) { "ok" }
     let(:status) { 200 }
-    let(:creator) { Viki::Core::Creator.new("http://example.com/path", content) }
+    let(:creator) { Viki::Core::Creator.new("http://example.com/path", content, {}) }
     let!(:req_stub) do
       stub_request("post", "http://example.com/path").
         with(body: Oj.dump(content, mode: :compat)).

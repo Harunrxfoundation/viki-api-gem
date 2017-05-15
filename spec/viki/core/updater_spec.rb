@@ -5,7 +5,7 @@ describe Viki::Core::Updater do
     let(:body) { {'title' => 'City Hunter'} }
     let(:content) { "ok" }
     let(:status) { 200 }
-    let(:creator) { Viki::Core::Updater.new("http://example.com/path", content) }
+    let(:creator) { Viki::Core::Updater.new("http://example.com/path", content, {}) }
     let!(:req_stub) do
       stub_request("put", "http://example.com/path").
         with(body: Oj.dump(content, mode: :compat)).
