@@ -20,6 +20,10 @@ module Viki::Core
     class << self
       attr_accessor :_paths, :_ssl, :_manage, :_cacheable
 
+      def headers
+        @@headers
+      end
+
       def set_default_headers(headers = {})
         @@headers = headers
       end
