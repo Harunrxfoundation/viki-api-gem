@@ -1,16 +1,19 @@
 module Viki::Core
   class Headers
+    HEADERS_KEY = "viki_core_headers.current_thread"
+
     class << self
+
       def headers
-        @headers.respond_to?(:key) ? @headers : {}
+        Thread.current[HEADERS_KEY].respond_to?(:key) ? Thread.current[HEADERS_KEY] : {}
       end
 
       def set_default_headers(headers = {})
-        @headers = headers
+        Thread.current[HEADERS_KEY] = headers
       end
 
       def add_on_headers(headers)
-        @headers.merge!(headers)
+        Thread.current[HEADERS_KEY].merge!(headers)
       end
     end
   end
