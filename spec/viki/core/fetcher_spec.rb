@@ -198,7 +198,7 @@ describe Viki::Core::Fetcher do
         let(:cacheSeconds) { 5 }
         let(:fetchUrl) { "http://one.two/three" }
         let(:fetcher) {
-          Viki::Core::Fetcher.new(fetchUrl, nil, "json", {},
+          Viki::Core::Fetcher.new(fetchUrl, nil, {}, "json",
                                   { cache_seconds: cacheSeconds })
         }
         let(:content) { { "Title" => "iTerm2 is better than Terminal?"} }

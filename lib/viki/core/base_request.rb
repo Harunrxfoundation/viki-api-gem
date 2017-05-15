@@ -1,7 +1,6 @@
 module Viki::Core
   class BaseRequest
-    attr_reader :url, :body, :headers, :cacheable
-    @@addon_headers = {}
+    attr_reader :url, :body, :addon_headers, :cacheable
     JSON_FORMAT = "json"
 
     def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {})
@@ -46,7 +45,8 @@ module Viki::Core
     end
 
     def default_headers(params_hash = {})
-      curr_headers = @@addon_headers.merge(params_hash)
+      curr_headers = @addon_headers.respond_to?(:key) ? @addon_headers : {}
+      curr_headers.merge!(params_hash)
       curr_headers.tap do |headers|
         headers['User-Agent'] = 'viki'
         headers['Content-Type'] = 'application/json'

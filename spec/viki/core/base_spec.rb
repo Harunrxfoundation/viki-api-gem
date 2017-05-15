@@ -236,7 +236,7 @@ describe Viki::Core::Base do
     end
   end
 
-  describe "#fetch" do
+  describe "static headers" do
     after(:each) do
       test_klass.set_default_headers({})
     end
@@ -245,7 +245,7 @@ describe Viki::Core::Base do
       expect(test_klass.headers).to eq({})
     end
 
-    it "sets default headers as an empty hash" do
+    it "sets headers and increment keys within headers hash" do
       test_klass.set_default_headers({"check" => "this"})
       expect(test_klass.headers).to eq({"check" => "this"})
 
