@@ -1,23 +1,4 @@
 module Viki::Core
-  class Headers
-    HEADERS_KEY = "viki_core_headers.current_thread"
-
-    class << self
-
-      def headers
-        Thread.current[HEADERS_KEY].respond_to?(:key) ? Thread.current[HEADERS_KEY] : {}
-      end
-
-      def set_default_headers(headers = {})
-        Thread.current[HEADERS_KEY] = headers
-      end
-
-      def add_on_headers(headers)
-        Thread.current[HEADERS_KEY].merge!(headers)
-      end
-    end
-  end
-
   class Base
     class InvalidOption < RuntimeError
       def initialize(field, value)
@@ -38,15 +19,11 @@ module Viki::Core
       attr_accessor :_paths, :_ssl, :_manage, :_cacheable, :_headers
 
       def headers
-        Viki::Core::Headers.headers
-      end
-
-      def set_default_headers(headers = {})
-        Viki::Core::Headers.set_default_headers(headers)
-      end
-
-      def add_on_headers(headers)
-        Viki::Core::Headers.add_on_headers(headers)
+        if Viki.respond_to?(:addon_headers)
+          Viki.addon_headers
+        else
+          {}
+        end
       end
 
       def cacheable(opts = {})
