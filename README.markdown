@@ -410,14 +410,6 @@ Viki::User.fetch(full_id: user_id) do |response|
 end
 ```
 
-#### Fetch user summary
-
-```ruby
-Viki::UserSummary.fetch(id: user_id) do |response|
-  puts response.inspect
-end
-```
-
 #### Fetch user roles
 
 ```ruby
@@ -1058,6 +1050,10 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.1
+  * get_signed_uri on base.rb to allow Gem to return the signed url as a method
+* 5.0.0
+  * Remove support for User Summary
 * 4.0.1
   * Support for property verification endpoint
 * 4.0.0
