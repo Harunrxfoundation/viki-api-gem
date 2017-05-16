@@ -19,11 +19,8 @@ module Viki::Core
       attr_accessor :_paths, :_ssl, :_manage, :_cacheable, :_headers
 
       def headers
-        if Viki.respond_to?(:addon_headers)
-          Viki.addon_headers
-        else
-          {}
-        end
+        curr_headers = Viki.addon_headers.call
+        curr_headers.nil? ? {} : curr_headers
       end
 
       def cacheable(opts = {})

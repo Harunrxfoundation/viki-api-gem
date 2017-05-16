@@ -9,7 +9,7 @@ require 'base64'
 
 module Viki
   class << self
-    attr_accessor :salt, :app_id, :domain, :manage, :logger, :user_ip, :user_token, :signer,
+    attr_accessor :salt, :app_id, :domain, :manage, :logger, :user_ip, :user_token, :addon_headers, :signer,
                   :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :hydra_options
   end
 
@@ -37,6 +37,7 @@ module Viki
     @logger = configurator.logger
     @user_ip = configurator.user_ip
     @user_token = configurator.user_token
+    @addon_headers = configurator.addon_headers
     @cache = configurator.cache
     @cache_ns = configurator.cache_ns
     @cache_seconds = configurator.cache_seconds
@@ -55,7 +56,7 @@ module Viki
 
   class Configurator
     attr_reader :logger
-    attr_accessor :salt, :app_id, :domain, :manage, :user_ip, :user_token, :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :max_concurrency, :pipelining, :memoize
+    attr_accessor :salt, :app_id, :domain, :manage, :user_ip, :user_token, :addon_headers, :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :max_concurrency, :pipelining, :memoize
 
     def logger=(v)
       @logger.level = Viki::Logger::FATAL if v.nil?
@@ -70,6 +71,7 @@ module Viki
       @logger.level = (ENV["VIKI_API_LOG_LEVEL"] || Viki::Logger::INFO).to_i
       @user_ip = lambda { }
       @user_token = lambda { }
+      @addon_headers = lambda { }
       @timeout_seconds = 5
       @timeout_seconds_post = 10
       @cache = nil
