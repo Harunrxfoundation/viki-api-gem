@@ -321,6 +321,19 @@ Viki::Container.recommendations('3466c') do |response|
 end
 ```
 
+#### Fetch container availability
+```ruby
+Viki::Container.availability('3466c') do |response|
+  puts response.value.inspect
+end
+```
+
+```ruby
+Viki::Container.recommendations('3466c') do |response|
+  puts response.value.inspect
+end
+```
+
 ### Others
 
 ##### Fetch related news of a particular ID and resource type
@@ -1066,6 +1079,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.1
+  * Support for /containers/:availability_for/availability endpoint
 * 5.0.0
   * Remove support for User Summary
 * 4.0.1
