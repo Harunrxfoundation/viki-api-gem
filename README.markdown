@@ -36,6 +36,22 @@ Viki.configure do |c|
 end
 ```
 
+Installation - Additional notes
+------------
+
+##### SSL Connection Error / HTTPS requests via curl
+
+Please note that all api requests are serviced through the [Typhoeus](https://github.com/typhoeus/typhoeus "Typhoeus Github Page") gem, which relies on your system's [libcurl](https://curl.haxx.se). The native libcurl should come with both HTTP and HTTPS protocols for present-day systems
+
+* To debug the version of your libcurl installed on your system, as well as narrowing down the cause of the connection issues, you can view [here](https://github.com/typhoeus/typhoeus#ssl "Typhoeus on SSL issues") .
+* To download an updated package for libcurl, please view [here](https://curl.haxx.se/download.html). Additional install solutions for [Windows](http://stackoverflow.com/questions/9507353/how-do-i-install-set-up-and-use-curl-on-windows), [Mac](http://brewformulas.org/Curl), [Mac Upgrade](http://stackoverflow.com/questions/36081761/how-to-update-curl-on-osx-el-capitan), [Ubuntu](http://askubuntu.com/questions/259681/the-program-curl-is-currently-not-installed), [CentOS Install / Upgrade](https://www.digitalocean.com/community/questions/how-to-upgrade-curl-in-centos6)
+* Here's a working version review of curl for reference (produced on OS X El Capitan, Version 10.11.6) via `curl --version`. Make sure `http` and `https` protocols are supported:
+
+`curl 7.43.0 (x86_64-apple-darwin15.0) libcurl/7.43.0 SecureTransport zlib/1.2.5
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtsp smb smbs smtp smtps telnet tftp`
+
+
+
 Configuration
 -------------
 
@@ -298,6 +314,19 @@ end
 
 
 #### Fetch recommended containers for a container
+
+```ruby
+Viki::Container.recommendations('3466c') do |response|
+  puts response.value.inspect
+end
+```
+
+#### Fetch container availability
+```ruby
+Viki::Container.availability('3466c') do |response|
+  puts response.value.inspect
+end
+```
 
 ```ruby
 Viki::Container.recommendations('3466c') do |response|
@@ -1050,8 +1079,10 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
-* 5.0.1
+* 5.0.2
   * get_signed_uri on base.rb to allow Gem to return the signed url as a method
+* 5.0.1
+  * Support for /containers/:availability_for/availability endpoint
 * 5.0.0
   * Remove support for User Summary
 * 4.0.1
