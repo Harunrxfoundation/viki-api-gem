@@ -1079,6 +1079,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.2
+  * get_signed_uri on base.rb to allow Gem to return the signed url as a method
 * 5.0.1
   * Support for /containers/:availability_for/availability endpoint
 * 5.0.0
