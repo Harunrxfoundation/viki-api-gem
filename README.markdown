@@ -1057,12 +1057,15 @@ Viki::WatchMarker(user_id: '1u', from: 1455950940) do |r|
 end
 ```
 
-#### Channel manager submissions
+#### Get Channel Manager Submissions
 ```ruby
 Viki::ChannelManagerApplications.get(channel_id: '50c', user_id: '42u') do |r|
   put r.inspect
 end
+```
 
+#### Create Channel Manager Submission
+```ruby
 Viki::ChannelManagerApplications.post({}, { cm_submission: { channel_id: '50c', user_id: '42u'} } ) do |r|
   put r.inspect
 end
