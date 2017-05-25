@@ -1057,6 +1057,17 @@ Viki::WatchMarker(user_id: '1u', from: 1455950940) do |r|
 end
 ```
 
+#### Channel manager submissions
+```ruby
+Viki::ChannelManagerApplications.get(channel_id: '50c', user_id: '42u') do |r|
+  put r.inspect
+end
+
+Viki::ChannelManagerApplications.post({}, { cm_submission: { channel_id: '50c', user_id: '42u'} } ) do |r|
+  put r.inspect
+end
+```
+
 Testing Tool
 ------------
 
@@ -1079,6 +1090,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.3
+  * Support for channel manager applications endpoint. /cm_submissions
 * 5.0.2
   * get_signed_uri on base.rb to allow Gem to return the signed url as a method
 * 5.0.1
