@@ -1,3 +1,3 @@
 module Viki
-  VERSION = "3.0.6"
+  VERSION = "5.0.2"
 end

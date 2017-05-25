@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    viki-api (3.0.6)
+    viki-api (5.0.2)
       addressable (>= 2.3)
       ethon (= 0.7.1)
       oj (>= 2.0)
@@ -107,4 +107,4 @@ DEPENDENCIES
   webmock (~> 1.12.3)
 
 BUNDLED WITH
-   1.12.5
+   1.14.5

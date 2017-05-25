@@ -69,6 +69,12 @@ module Viki::Core
         signer.sign_request(uri(params).to_s, body)
       end
 
+      # Proxy to method above, but duping params to preserve the values from
+      # from deletes in other method calls
+      def get_signed_uri(url_options = {}, body = nil)
+        signed_uri(url_options.dup, body)
+      end
+
       def fetch(url_options = {}, &block)
         format = get_format(url_options)
         uri = signed_uri(url_options.dup)
