@@ -33,6 +33,7 @@ Viki.configure do |c|
   c.max_concurrency = 200 # The number of concurrent connection the Gem can request with
   c.pipelining = true # Allow pipeling in Hydra
   c.memoize = true # Allow same calls to be called only once per batch
+  c.ssl = true # False by default - ssl config for http calls 
 end
 ```
 
