@@ -14,7 +14,8 @@ module Viki::Core
     def queue(&block)
       request.tap do |req|
         req.on_complete do |res|
-          log @url,res,default_headers
+          headers = default_headers
+          log @url,res,headers
           if is_error?(res)
             if res.timed_out?
               error = Viki::Core::TimeoutErrorResponse.new(@url)
