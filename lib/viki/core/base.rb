@@ -27,6 +27,14 @@ module Viki::Core
         @_ssl = true
       end
 
+      def is_ssl_enabled?
+        if @_ssl.nil?
+          Viki.is_ssl_enabled?
+        else
+          @_ssl
+        end
+      end
+
       def path(path, options = {})
         api_version = options.fetch(:api_version, DEFAULT_API_VERSION)
         path = api_version + path
@@ -49,7 +57,7 @@ module Viki::Core
         params = build_params(params)
         path, params = build_path(params)
         path = "/#{path}.#{params.delete(:format)}"
-        domain = "http#{"s" if @_ssl}://#{params.delete(:manage) == true ? Viki.manage : Viki.domain}"
+        domain = "http#{"s" if is_ssl_enabled?}://#{params.delete(:manage) == true ? Viki.manage : Viki.domain}"
         uri = Addressable::URI.join(domain, path)
 
         query_values = {}

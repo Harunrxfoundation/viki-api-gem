@@ -61,4 +61,22 @@ describe Viki do
       expect(Viki.hydra.max_concurrency).to be(100)
     end
   end
+
+  describe 'is_ssl_enabled?' do
+    it 'initializes with ssl option' do
+      Viki.configure do |c|
+        c.ssl = true
+      end
+
+      expect(Viki.is_ssl_enabled?).to eq true
+    end
+
+    it 'initializes without ssl option' do
+      Viki.configure do |c|
+        c.ssl = false
+      end
+
+      expect(Viki.is_ssl_enabled?).to eq false
+    end
+  end
 end
