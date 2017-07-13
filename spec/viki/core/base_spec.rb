@@ -247,4 +247,32 @@ describe Viki::Core::Base do
       end
     end
   end
+
+  describe "is_ssl_enabled?" do
+    it 'initializes with ssl option' do
+      Viki.configure do |c|
+        c.ssl = true
+      end
+
+      expect(Viki::Core::Base.is_ssl_enabled?).to eq true
+    end
+
+    describe 'initializes without ssl option' do
+      before(:each) do
+        Viki.configure do |c|
+          c.ssl = false
+        end
+      end
+
+      it 'use_ssl is called' do
+        Viki::Core::Base.use_ssl
+        expect(Viki::Core::Base.is_ssl_enabled?).to eq true
+      end
+
+      it 'use_ssl is not called' do
+        Viki::Core::Base._ssl = false
+        expect(Viki::Core::Base.is_ssl_enabled?).to eq false
+      end
+    end
+  end
 end

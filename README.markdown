@@ -33,6 +33,7 @@ Viki.configure do |c|
   c.max_concurrency = 200 # The number of concurrent connection the Gem can request with
   c.pipelining = true # Allow pipeling in Hydra
   c.memoize = true # Allow same calls to be called only once per batch
+  c.ssl = true # False by default - ssl config for http calls 
 end
 ```
 
@@ -77,6 +78,8 @@ Configuration
 * `c.cache_ns` Namespace for the cache keys stored in Redis. Defaults to `viki-api-gem-cache`. **Optional**
 
 * `c.cache_seconds` Seconds to cache responses from the API. Defaults to 5. **Optional**
+
+* `c.ssl` Boolean value to decide if api endpoints are to be enable ssl. Works with use_ssl. **Optional**
 
 Usage by examples
 -----------------
@@ -1093,6 +1096,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.4
+  * Added option for configuring ssl for all endpoints.
 * 5.0.3
   * Support for channel manager applications endpoint. /cm_submissions
 * 5.0.2
