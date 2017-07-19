@@ -16,11 +16,27 @@ module Viki::Core
     DEFAULT_API_VERSION = "v4"
 
     class << self
-      attr_accessor :_paths, :_ssl, :_manage, :_cacheable
+      attr_accessor :_paths, :_ssl, :_manage, :_cacheable, :_is_cacheable
+
+      def is_cacheable?
+        @_is_cacheable == true
+      end
 
       def cacheable(opts = {})
-        cache_seconds = opts.delete(:cache_seconds) || Viki.cache_seconds
-        @_cacheable = {cache_seconds: cache_seconds}
+        @_is_cacheable = true
+
+        # Set the payload for _cacheable if the class already sets it
+        if opts.key?(:cache_seconds)
+          cache_seconds = opts.delete(:cache_seconds)
+          @_cacheable = { cache_seconds: cache_seconds }
+        end
+      end
+
+      def cacheable_payload
+        # Link the cache payload to prior _cacheable entity if present,
+        # else set it as the gem's default cache_seconds
+        return @_cacheable if @_cacheable
+        return { cache_seconds: Viki.cache_seconds }
       end
 
       def use_ssl
@@ -88,8 +104,8 @@ module Viki::Core
         uri = signed_uri(url_options.dup)
         Viki.logger.debug "#{self.name} fetching from the API: #{uri}"
 
-        if @_cacheable
-          fetcher = Viki::Core::Fetcher.new(uri, nil, format, @_cacheable)
+        if is_cacheable?
+          fetcher = Viki::Core::Fetcher.new(uri, nil, format, cacheable_payload)
         else
           fetcher = Viki::Core::Fetcher.new(uri, nil, format)
         end
