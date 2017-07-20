@@ -19,8 +19,10 @@ module Viki::Core
       attr_accessor :_paths, :_ssl, :_manage, :_cacheable, :_headers
 
       def headers
-        curr_headers = Viki.addon_headers.call
-        curr_headers.nil? ? {} : curr_headers
+        addon_headers = Viki.addon_headers.call
+        # Return value should always be a hash - must check as this is the entry
+        # point from integrated clients
+        return addon_headers.is_a?(Hash) ? addon_headers : {}
       end
 
       def cacheable(opts = {})
@@ -30,6 +32,14 @@ module Viki::Core
 
       def use_ssl
         @_ssl = true
+      end
+
+      def is_ssl_enabled?
+        if @_ssl.nil?
+          Viki.is_ssl_enabled?
+        else
+          @_ssl
+        end
       end
 
       def path(path, options = {})
@@ -54,7 +64,7 @@ module Viki::Core
         params = build_params(params)
         path, params = build_path(params)
         path = "/#{path}.#{params.delete(:format)}"
-        domain = "http#{"s" if @_ssl}://#{params.delete(:manage) == true ? Viki.manage : Viki.domain}"
+        domain = "http#{"s" if is_ssl_enabled?}://#{params.delete(:manage) == true ? Viki.manage : Viki.domain}"
         uri = Addressable::URI.join(domain, path)
 
         query_values = {}

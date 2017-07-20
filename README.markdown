@@ -33,6 +33,7 @@ Viki.configure do |c|
   c.max_concurrency = 200 # The number of concurrent connection the Gem can request with
   c.pipelining = true # Allow pipeling in Hydra
   c.memoize = true # Allow same calls to be called only once per batch
+  c.ssl = true # False by default - ssl config for http calls
 end
 ```
 
@@ -77,6 +78,8 @@ Configuration
 * `c.cache_ns` Namespace for the cache keys stored in Redis. Defaults to `viki-api-gem-cache`. **Optional**
 
 * `c.cache_seconds` Seconds to cache responses from the API. Defaults to 5. **Optional**
+
+* `c.ssl` Boolean value to decide if api endpoints are to be enable ssl. Works with use_ssl. **Optional**
 
 Usage by examples
 -----------------
@@ -1071,6 +1074,41 @@ Viki::ChannelManagerApplications.post({}, { cm_submission: { channel_id: '50c', 
 end
 ```
 
+#### Get Purchaseable Plan Invoice
+```ruby
+Viki::PurchasablePlanInvoice.fetch(plan_id: "21p") do |r|
+  put r.inspect
+end
+```
+
+#### Get Purchaseable Plans
+```ruby
+Viki::PurchasablePlans.fetch(features: "noads,hd", verticals: "1pv") do |r|
+  put r.inspect
+end
+```
+
+#### Get Subscription History
+```ruby
+Viki::VikiSubscriptionHistory.fetch(user_id: '171u') do |r|
+  put r.inspect
+end
+```
+
+#### Get Subscription Status
+```ruby
+Viki::VikiSubscriptionStatus.fetch(user_id: '10u') do |r|
+  put r.inspect
+end
+```
+
+#### Get Subscription Tracks
+```ruby
+Viki::SubscriptionTracks.fetch({}) do |r|
+  put r.inspect
+end
+```
+
 Testing Tool
 ------------
 
@@ -1093,6 +1131,10 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.5
+  * Added purchaseable plan endpoints.
+* 5.0.4
+  * Added option for configuring ssl for all endpoints.
 * 5.0.3
   * Support for channel manager applications endpoint. /cm_submissions
 * 5.0.2

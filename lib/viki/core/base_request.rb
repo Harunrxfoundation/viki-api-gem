@@ -46,9 +46,8 @@ module Viki::Core
     end
 
     def default_headers(params_hash = {})
-      curr_headers = @addon_headers.respond_to?(:key) ? @addon_headers : {}
-      curr_headers.merge!(params_hash)
-      curr_headers.tap do |headers|
+      params_hash.merge!(@addon_headers)
+      params_hash.tap do |headers|
         headers['User-Agent'] = 'viki'
         headers['Content-Type'] = 'application/json'
         user_ip = Viki.user_ip.call

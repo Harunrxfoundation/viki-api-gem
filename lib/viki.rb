@@ -10,7 +10,7 @@ require 'base64'
 module Viki
   class << self
     attr_accessor :salt, :app_id, :domain, :manage, :logger, :user_ip, :user_token, :addon_headers, :signer,
-                  :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :hydra_options
+                  :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :hydra_options, :ssl
   end
 
   def self.run
@@ -42,8 +42,13 @@ module Viki
     @cache_ns = configurator.cache_ns
     @cache_seconds = configurator.cache_seconds
     @hydra_options = {max_concurrency: configurator.max_concurrency, pipelining: configurator.pipelining}
+    @ssl = configurator.ssl
     Typhoeus::Config.memoize = configurator.memoize
     nil
+  end
+
+  def self.is_ssl_enabled?
+    @ssl
   end
 
   def self.hydra
@@ -56,7 +61,7 @@ module Viki
 
   class Configurator
     attr_reader :logger
-    attr_accessor :salt, :app_id, :domain, :manage, :user_ip, :user_token, :addon_headers, :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :max_concurrency, :pipelining, :memoize
+    attr_accessor :salt, :app_id, :domain, :manage, :user_ip, :user_token, :addon_headers, :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :max_concurrency, :pipelining, :memoize, :ssl
 
     def logger=(v)
       @logger.level = Viki::Logger::FATAL if v.nil?
@@ -71,7 +76,7 @@ module Viki
       @logger.level = (ENV["VIKI_API_LOG_LEVEL"] || Viki::Logger::INFO).to_i
       @user_ip = lambda { }
       @user_token = lambda { }
-      @addon_headers = lambda { }
+      @addon_headers = lambda { {} }
       @timeout_seconds = 5
       @timeout_seconds_post = 10
       @cache = nil
@@ -80,6 +85,7 @@ module Viki
       @max_concurrency = 200
       @pipelining = false
       @memoize = true
+      @ssl = false
     end
   end
 end
