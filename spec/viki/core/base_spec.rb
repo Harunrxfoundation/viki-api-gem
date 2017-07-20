@@ -124,6 +124,55 @@ describe Viki::Core::Base do
     end
   end
 
+  describe "#is_cacheable?" do
+    it 'make sure that default is always not cacheable' do
+      expect(test_klass.is_cacheable?).to eq false
+    end
+
+    it 'make sure that default is cacheable if no cacheable values is sent' do
+      test_klass.cacheable
+      expect(test_klass.is_cacheable?).to eq true
+    end
+
+    it 'make sure that default is cacheable if cacheable values are sent' do
+      test_klass.cacheable({ cache_seconds: 30 })
+      expect(test_klass.is_cacheable?).to eq true
+    end
+  end
+
+  describe "#cacheable" do
+    it 'make sure that cacheable parameters are set when called' do
+      test_klass.cacheable({ cache_seconds: 52 })
+      expect(test_klass._is_cacheable).to eq true
+      expect(test_klass._cacheable).to eq({cache_seconds: 52})
+    end
+
+    it 'make sure that cacheable parameters are set when called even with no timing' do
+      test_klass.cacheable
+      expect(test_klass._is_cacheable).to eq true
+      expect(test_klass._cacheable).to be_nil
+    end
+  end
+
+  describe "#cacheable_payload" do
+    it 'returns default payload if cacheable timing is not set' do
+      test_klass.cacheable
+      expect(test_klass.cacheable_payload).to eq({cache_seconds: 5})
+      # Dynamically set default cache_seconds payload - this occurs during
+      # Viki.configure for client apps - which replaces the default
+      Viki.should_receive(:cache_seconds).and_return(14)
+      expect(test_klass.cacheable_payload).to eq({cache_seconds: 14})
+    end
+
+    it 'returns immutable payload if cacheable timing is set' do
+      test_klass.cacheable({ cache_seconds: 35 })
+      expect(test_klass.cacheable_payload).to eq({cache_seconds: 35})
+      # Test mutability
+      Viki.should_not_receive(:cache_seconds)
+      expect(test_klass.cacheable_payload).to eq({cache_seconds: 35})
+    end
+  end
+
   describe "#signed_uri" do
     let(:uri) { Addressable::URI.parse "http://example.com" }
     let(:body) { "" }
