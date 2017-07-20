@@ -16,7 +16,14 @@ module Viki::Core
     DEFAULT_API_VERSION = "v4"
 
     class << self
-      attr_accessor :_paths, :_ssl, :_manage, :_cacheable, :_is_cacheable
+      attr_accessor :_paths, :_ssl, :_manage, :_headers, :_cacheable, :_is_cacheable
+
+      def headers
+        addon_headers = Viki.addon_headers.call
+        # Return value should always be a hash - must check as this is the entry
+        # point from integrated clients
+        return addon_headers.is_a?(Hash) ? addon_headers : {}
+      end
 
       def is_cacheable?
         @_is_cacheable == true
@@ -105,9 +112,9 @@ module Viki::Core
         Viki.logger.debug "#{self.name} fetching from the API: #{uri}"
 
         if is_cacheable?
-          fetcher = Viki::Core::Fetcher.new(uri, nil, format, cacheable_payload)
+          fetcher = Viki::Core::Fetcher.new(uri, nil, headers, format, cacheable_payload)
         else
-          fetcher = Viki::Core::Fetcher.new(uri, nil, format)
+          fetcher = Viki::Core::Fetcher.new(uri, nil, headers, format)
         end
 
         fetcher.queue &block
@@ -125,7 +132,7 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} creating to the API: #{uri}"
-        creator = Viki::Core::Creator.new(uri, body, format)
+        creator = Viki::Core::Creator.new(uri, body, headers, format)
         creator.queue &block
         creator
       end
@@ -141,7 +148,7 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} updating to the API: #{uri}"
-        creator = Viki::Core::Updater.new(uri, body, format)
+        creator = Viki::Core::Updater.new(uri, body, headers, format)
         creator.queue &block
         creator
       end
@@ -157,7 +164,7 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} destroying to the API: #{uri}"
-        destroyer = Viki::Core::Destroyer.new(uri, body, format)
+        destroyer = Viki::Core::Destroyer.new(uri, body, headers, format)
         destroyer.queue &block
         destroyer
       end
@@ -173,7 +180,7 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} patching to the API: #{uri}"
-        creator = Viki::Core::Patcher.new(uri, body, format)
+        creator = Viki::Core::Patcher.new(uri, body, headers, format)
         creator.queue &block
         creator
       end
