@@ -1134,6 +1134,9 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.6
+  * Fixed the configuration implementation of cache_seconds
+  * Allow headers to be injected for each endpoint call
 * 5.0.5
   * Added purchaseable plan endpoints.
 * 5.0.4
