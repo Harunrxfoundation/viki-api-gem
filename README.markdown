@@ -22,6 +22,7 @@ Viki.configure do |c|
   c.app_id = 'your_app_id'
   c.user_ip = -> { 'the IP of your user' }
   c.user_token = -> { 'the token of your user' }
+  c.addon_headers = -> { 'the hash for additional headers to send in each api call' }
   c.domain = 'the API domain to use'
 
   # Optional
@@ -63,6 +64,8 @@ Configuration
 * `c.user_ip` Lambda block returning the IP address of the user. It is put in the header of the requests to the API as `X-FORWARDED-FOR`. **Required**
 
 * `c.user_token` Lambda block returning the session token of the user. **Required**
+
+* `c.addon_headers` Lambda block returning the headers to inject in each api call. **Required**
 
 * `c.domain` The API host to connect to. E.g. `api.viki.io` **Required**
 
