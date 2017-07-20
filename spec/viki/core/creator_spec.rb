@@ -5,7 +5,7 @@ describe Viki::Core::Creator do
     let(:body) { {'title' => 'City Hunter'} }
     let(:content) { "ok" }
     let(:status) { 200 }
-    let(:creator) { Viki::Core::Creator.new("http://example.com/path", content) }
+    let(:creator) { Viki::Core::Creator.new("http://example.com/path", content, {}) }
     let!(:req_stub) do
       stub_request("post", "http://example.com/path").
         with(body: Oj.dump(content, mode: :compat)).
@@ -21,7 +21,7 @@ describe Viki::Core::Creator do
     end
 
     it "sends the user IP as X-FORWARDED-FOR" do
-      Viki.should_receive(:user_ip).twice { lambda { "1.2.3.4" } }
+      Viki.should_receive(:user_ip).exactly(3) { lambda { "1.2.3.4" } }
       creator.queue do
         WebMock.should have_requested("post", "http://example.com/path").
                          with(:headers => {'X-Forwarded-For' => "1.2.3.4"})

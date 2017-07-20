@@ -19,7 +19,7 @@ describe Viki::Core::Destroyer do
     end
 
     it "sends the user IP as X-FORWARDED-FOR" do
-      Viki.should_receive(:user_ip).twice { lambda { "1.2.3.4" } }
+      Viki.should_receive(:user_ip).exactly(3) { lambda { "1.2.3.4" } }
       destroyer.queue do
         WebMock.should have_requested("delete", "http://example.com/path").
                          with(:headers => {'X-Forwarded-For' => "1.2.3.4"})

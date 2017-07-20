@@ -1,20 +1,21 @@
 module Viki::Core
   class BaseRequest
-    attr_reader :url, :body, :cacheable
-
+    attr_reader :url, :body, :addon_headers, :cacheable
     JSON_FORMAT = "json"
 
-    def initialize(url, body = nil, format=JSON_FORMAT, cache = {})
+    def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {})
       @cacheable = cache
       @url = url.to_s
       @format = format
       @body = body ? Oj.dump(body, mode: :compat) : nil
+      @addon_headers = headers
     end
 
     def queue(&block)
       request.tap do |req|
         req.on_complete do |res|
-          log @url,res
+          headers = default_headers
+          log @url,res,headers
           if is_error?(res)
             if res.timed_out?
               error = Viki::Core::TimeoutErrorResponse.new(@url)
@@ -45,6 +46,7 @@ module Viki::Core
     end
 
     def default_headers(params_hash = {})
+      params_hash.merge!(@addon_headers)
       params_hash.tap do |headers|
         headers['User-Agent'] = 'viki'
         headers['Content-Type'] = 'application/json'
@@ -53,7 +55,7 @@ module Viki::Core
       end
     end
 
-    def log(url, res = nil)
+    def log(url, res = nil, request_headers = nil)
       if res != nil
         Viki.logger.info "[API Request] [Responded] [#{Viki.user_ip[]}] #{url} #{res.time}s"
       else

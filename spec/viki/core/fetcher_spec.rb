@@ -4,7 +4,7 @@ describe Viki::Core::Fetcher do
   describe '#fetch' do
     let(:content) { {'title' => 'City Hunter'} }
     let(:status) { 200 }
-    let(:fetcher) { Viki::Core::Fetcher.new("http://example.com/path") }
+    let(:fetcher) { Viki::Core::Fetcher.new("http://example.com/path", nil, {}) }
 
     before do
       stub_request("get", "http://example.com/path").to_return(body: Oj.dump(content, mode: :compat),
@@ -88,7 +88,7 @@ describe Viki::Core::Fetcher do
 
     describe "caching" do
       let(:cache_seconds) { 5 }
-      let(:fetcher) { Viki::Core::Fetcher.new("http://example.com/path", nil, "json", {cache_seconds: cache_seconds}) }
+      let(:fetcher) { Viki::Core::Fetcher.new("http://example.com/path", nil, {}, "json", {cache_seconds: cache_seconds}) }
       let(:cache) do
         {}.tap { |c|
           def c.setex(k, s, v)
@@ -124,7 +124,7 @@ describe Viki::Core::Fetcher do
       it "doesn't cache if request has nocache=true" do
         stub_request("get", "http://example.com/path?nocache=true").
             to_return(body: Oj.dump(content, mode: :compat), status: status)
-        nocache_fetcher = Viki::Core::Fetcher.new("http://example.com/path?nocache=true", nil, {cache_seconds: 5})
+        nocache_fetcher = Viki::Core::Fetcher.new("http://example.com/path?nocache=true", nil, {}, {cache_seconds: 5})
         nocache_fetcher.queue do
           nocache_fetcher.queue do
             WebMock.should have_requested("get", "http://example.com/path?nocache=true").twice
@@ -173,8 +173,8 @@ describe Viki::Core::Fetcher do
         stub_request("get", "http://example.com/path?other=a&t=123&sig=abc&token=123").to_return(body: Oj.dump(content, mode: :compat), status: status)
         stub_request("get", "http://example.com/path?other=b&t=123&sig=abc&token=123").to_return(body: Oj.dump(content, mode: :compat), status: status)
 
-        Viki::Core::Fetcher.new("http://example.com/path?other=a&t=123&sig=abc&token=123", nil, {cache_seconds: 5}).queue do
-          Viki::Core::Fetcher.new("http://example.com/path?other=b&t=123&sig=abc&token=123", nil, {cache_seconds: 5}).queue do
+        Viki::Core::Fetcher.new("http://example.com/path?other=a&t=123&sig=abc&token=123", nil, {}, {cache_seconds: 5}).queue do
+          Viki::Core::Fetcher.new("http://example.com/path?other=b&t=123&sig=abc&token=123", nil, {}, {cache_seconds: 5}).queue do
             WebMock.should have_requested("get", "http://example.com/path?other=a&t=123&sig=abc&token=123").once
             WebMock.should have_requested("get", "http://example.com/path?other=b&t=123&sig=abc&token=123").once
           end
@@ -186,8 +186,8 @@ describe Viki::Core::Fetcher do
         stub_request("get", "http://example.com/path?token=1234_13").to_return(:body => Oj.dump(content))
         stub_request("get", "http://example.com/path?token=1234_13").to_return(:body => Oj.dump(content))
 
-        Viki::Core::Fetcher.new("http://example.com/path?token=1234_13", nil, 'json', {cache_seconds: 5}).queue do
-          Viki::Core::Fetcher.new("http://example.com/path?token=1234_13", nil, 'json', {cache_seconds: 5}).queue do
+        Viki::Core::Fetcher.new("http://example.com/path?token=1234_13", nil, {}, 'json', {cache_seconds: 5}).queue do
+          Viki::Core::Fetcher.new("http://example.com/path?token=1234_13", nil, {}, 'json', {cache_seconds: 5}).queue do
             WebMock.should have_requested("get", "http://example.com/path?token=1234_13").once
             WebMock.should have_requested("get", "http://example.com/path?token=1234_13").once
           end
@@ -198,7 +198,7 @@ describe Viki::Core::Fetcher do
         let(:cacheSeconds) { 5 }
         let(:fetchUrl) { "http://one.two/three" }
         let(:fetcher) {
-          Viki::Core::Fetcher.new(fetchUrl, nil, "json",
+          Viki::Core::Fetcher.new(fetchUrl, nil, {}, "json",
                                   { cache_seconds: cacheSeconds })
         }
         let(:content) { { "Title" => "iTerm2 is better than Terminal?"} }
@@ -258,7 +258,7 @@ describe Viki::Core::Fetcher do
         let(:cacheSeconds) { 5 }
         let(:fetchUrl) { "http://www.going.to.korea.com/" }
         let(:fetcher) {
-          Viki::Core::Fetcher.new(fetchUrl, nil, "notjson",
+          Viki::Core::Fetcher.new(fetchUrl, nil, {}, "notjson",
                                   { cache_seconds: cacheSeconds })
         }
         let(:content) { "iMacs are best used in low light conditions" }
