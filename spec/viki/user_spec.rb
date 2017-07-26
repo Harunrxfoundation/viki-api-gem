@@ -14,4 +14,14 @@ describe Viki::User, api: true do
       response.value.should == user_obj
     end
   end
+
+  describe '#login_history' do
+    it 'fetches login history' do
+      user_id = '1u'
+      user_obj = { "id" => user_id }
+
+      stub_api "users/#{user_id}/login_history.json", Oj.dump(user_obj), {api_version: 'v4', https: true}
+      expect(described_class.login_history(user_id: user_id).value).to eq user_obj
+    end
+  end
 end
