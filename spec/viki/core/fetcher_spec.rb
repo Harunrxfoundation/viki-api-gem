@@ -99,6 +99,10 @@ describe Viki::Core::Fetcher do
             self[k]
           end
 
+          def c.exists(k)
+            self.key?(k)
+          end
+
           def c.expire(k, s)
           end
         }
@@ -209,6 +213,10 @@ describe Viki::Core::Fetcher do
               self["cache-seconds"] = time
             end
 
+            def c.exists(k)
+              self.key?(k)
+            end
+
             def c.get(k)
               self[k]
             end
@@ -293,6 +301,10 @@ describe Viki::Core::Fetcher do
           {}.tap { |c|
             def c.setex(k, time, v)
               self["cache-seconds"] = time
+            end
+
+            def c.exists(k)
+              self.key?(k)
             end
 
             def c.get(k)

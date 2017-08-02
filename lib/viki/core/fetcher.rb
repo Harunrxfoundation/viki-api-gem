@@ -15,7 +15,12 @@ module Viki::Core
       super && return if @url.include?("nocache=true")
       super && return unless Viki.cache && !cacheable.empty?
 
-      cached = Viki.cache.get(cache_key(url))
+      public_cache_key = cache_key(url, true)
+      private_cache_key = cache_key(url, false)
+      cached = if Viki.cache.exists(private_cache_key)
+              then Viki.cache.get(private_cache_key)
+              else Viki.cache.get(public_cache_key)
+              end
       if cached
         begin
           parsed_body = Oj.load(cached, mode: :compat, symbol_keys: false)
