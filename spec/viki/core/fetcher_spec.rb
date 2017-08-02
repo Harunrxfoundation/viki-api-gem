@@ -196,7 +196,7 @@ describe Viki::Core::Fetcher do
 
       describe "Cache-Control header (for Fetcher taking in JSON)" do
         let(:cacheSeconds) { 5 }
-        let(:fetchUrl) { "http://one.two/three" }
+        let(:fetchUrl) { "http://one.two/three?token=4567_89" }
         let(:fetcher) {
           Viki::Core::Fetcher.new(fetchUrl, nil, {}, "json",
                                   { cache_seconds: cacheSeconds })
@@ -205,6 +205,7 @@ describe Viki::Core::Fetcher do
         let(:newCache) {
           {}.tap { |c|
             def c.setex(key, time, value)
+              self["cache-key"] = key
               self["cache-seconds"] = time
             end
 
@@ -250,6 +251,32 @@ describe Viki::Core::Fetcher do
 
           fetcher.queue do
             newCache["cache-seconds"].should == cacheSeconds
+          end
+        end
+
+        it "omit role trail in cache key when the resource is public" do
+          Viki.stub(:cache) { newCache }
+          stub_request("get", fetchUrl).to_return(
+            body: Oj.dump(content, mode: :compat),
+            status: 200,
+            headers: { "Cache-Control" => "public, max-age=1793" }
+          )
+
+          fetcher.queue do
+            newCache["cache-key"].should == "viki-api-gem./three"
+          end
+        end
+
+        it "sets role trail in cache key when the resource is private" do
+          Viki.stub(:cache) { newCache }
+          stub_request("get", fetchUrl).to_return(
+            body: Oj.dump(content, mode: :compat),
+            status: 200,
+            headers: { "Cache-Control" => "private, max-age=1793" }
+          )
+
+          fetcher.queue do
+            newCache["cache-key"].should == "viki-api-gem./three-@role=89"
           end
         end
       end

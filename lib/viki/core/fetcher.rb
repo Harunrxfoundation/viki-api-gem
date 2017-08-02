@@ -43,10 +43,12 @@ module Viki::Core
         if body
           if Viki.cache && !cacheable.empty?
             cacheSeconds = cacheable[:cache_seconds]
+            public_cache = false
             # Respect timing set in Cache-Control header for stuff that's public
             if headers.respond_to?(:has_key?) && headers.has_key?("Cache-Control")
               cacheHeaderParts = headers["Cache-Control"].split(",").map { |s| s.strip }
               if cacheHeaderParts.include?("public")
+                public_cache = true
                 maxAgeRegex = %r{^max-age=\d+$}
                 maxAgeList = cacheHeaderParts.drop_while { |x| x !~ maxAgeRegex }
                 if maxAgeList.length > 0
@@ -54,7 +56,7 @@ module Viki::Core
                 end
               end
             end
-            Viki.cache.setex(cache_key(url), cacheSeconds, Oj.dump(body, mode: :compat))
+            Viki.cache.setex(cache_key(url, public_cache), cacheSeconds, Oj.dump(body, mode: :compat))
           end
           block.call Viki::Core::Response.new(nil, get_content(body), self)
         else
@@ -92,19 +94,22 @@ module Viki::Core
       value.has_key?("response")
     end
 
-    def cache_key(url)
+    def cache_key(url, public_cache = false)
       parsed_url = Addressable::URI.parse(url)
       cache_key = parsed_url.path
 
       if parsed_url.query_values
-        token = parsed_url.query_values[TOKEN_FIELD]
-        user_role = 0
-        if token
-          rindex_token = token.rindex("_")
-          token_role = rindex_token.nil? ? 0 : token[rindex_token + 1, token.length]
-          user_role = token_role
+        # Only include user role if caching for private
+        unless public_cache
+          token = parsed_url.query_values[TOKEN_FIELD]
+          user_role = 0
+          if token
+            rindex_token = token.rindex("_")
+            token_role = rindex_token.nil? ? 0 : token[rindex_token + 1, token.length]
+            user_role = token_role
+          end
+          cache_key += "-@role=#{user_role}"
         end
-        cache_key += "-@role=#{user_role}"
 
         parsed_url.query_values.
           reject { |k, _| IGNORED_PARAMS.include?(k) }.
