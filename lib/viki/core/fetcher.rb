@@ -17,10 +17,9 @@ module Viki::Core
 
       public_cache_key = cache_key(url, true)
       private_cache_key = cache_key(url, false)
-      cached = if Viki.cache.exists(private_cache_key)
-              then Viki.cache.get(private_cache_key)
-              else Viki.cache.get(public_cache_key)
-              end
+      cached = Viki.cache.get(private_cache_key)
+      cached = Viki.cache.get(public_cache_key) unless cached
+
       if cached
         begin
           parsed_body = Oj.load(cached, mode: :compat, symbol_keys: false)
