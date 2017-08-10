@@ -445,6 +445,14 @@ Viki::User.fetch(full_id: user_id) do |response|
 end
 ```
 
+#### Fetch user's login history
+
+```ruby
+Viki::User.login_history(user_id: user_id) do |response|
+  puts response.inspect
+end
+```
+
 #### Fetch user roles
 
 ```ruby
@@ -1134,6 +1142,9 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.7
+  * Update caching logic to accommodate "public" caching and enable caching for leaderboards endpoints
+  * Support login history retrieval on user
 * 5.0.6
   * Fixed the configuration implementation of cache_seconds
   * Allow headers to be injected for each endpoint call
