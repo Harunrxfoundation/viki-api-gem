@@ -15,10 +15,8 @@ module Viki::Core
       super && return if @url.include?("nocache=true")
       super && return unless Viki.cache && !cacheable.empty?
 
-      public_cache_key = cache_key(url, true)
-      private_cache_key = cache_key(url, false)
-      cached = Viki.cache.get(private_cache_key)
-      cached = Viki.cache.get(public_cache_key) unless cached
+      cached = Viki.cache.get(cache_key(url, false))
+      cached = Viki.cache.get(cache_key(url, true)) unless cached
 
       if cached
         begin
