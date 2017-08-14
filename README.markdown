@@ -1142,6 +1142,8 @@ Only works with built-in RSpec mock framwork
 
 Changelog
 ---------
+* 5.0.8
+  * Remove cacheable logic on PurchaseablePlans
 * 5.0.7
   * Update caching logic to accommodate "public" caching and enable caching for leaderboards endpoints
   * Support login history retrieval on user
