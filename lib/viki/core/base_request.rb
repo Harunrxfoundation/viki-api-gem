@@ -75,7 +75,7 @@ module Viki::Core
     def cache_path_components(url)
       parsed_url = Addressable::URI.parse(url)
       cache_key = parsed_url.path
-      "#{Viki.cache_ns}.#{cache_key}", parsed_url
+      ["#{Viki.cache_ns}.#{cache_key}", parsed_url]
     end
 
     private
