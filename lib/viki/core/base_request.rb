@@ -66,6 +66,18 @@ module Viki::Core
     def log_json(msg)
     end
 
+    # This helper method facilitates a common cache prefix to be used between
+    # subclasses of BaseRequest and a parsed url object of type Addressable::URI
+    #
+    # Yield a set of the following :
+    #  - cache key prefix
+    #  - created parsed url under the type Addressable::URI
+    def cache_path_components(url)
+      parsed_url = Addressable::URI.parse(url)
+      cache_key = parsed_url.path
+      "#{Viki.cache_ns}.#{cache_key}", parsed_url
+    end
+
     private
 
     def is_error?(response)

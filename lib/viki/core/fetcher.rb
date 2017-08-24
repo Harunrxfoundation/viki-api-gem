@@ -97,8 +97,7 @@ module Viki::Core
     end
 
     def cache_key(url, public_cache = false)
-      parsed_url = Addressable::URI.parse(url)
-      cache_key = parsed_url.path
+      cache_key, parsed_url = cache_path_components(url)
 
       if parsed_url.query_values
         # Only include user role if caching for private
@@ -121,7 +120,7 @@ module Viki::Core
           cache_key += "-#{k}=#{v}"
         end
       end
-      "#{Viki.cache_ns}.#{cache_key}"
+      cache_key
     end
   end
 end
