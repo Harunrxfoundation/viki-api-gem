@@ -64,7 +64,7 @@ module Viki::Core
         # Link the cachebustable payload to built path if a default path is not
         # provided
         return @_cachebustable if @_cachebustable
-        return { path: build_path(params) }
+        return { path: "/#{build_path(params)[0]}" }
       end
 
       def use_ssl

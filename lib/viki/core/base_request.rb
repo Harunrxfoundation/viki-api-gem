@@ -80,16 +80,14 @@ module Viki::Core
     end
 
     def cache_bust
-      if Viki.cache && @cachebustable.key?(:path)
-        cache_path_prefix = cache_path_components(@cachebustable.delete(:path))[0]
-        bustable_keys = Viki.cache.keys("#{cache_path_prefix}*")
-        Viki.cache.del(*bustable_keys) unless bustable_keys.empty?
-      end
+      cache_path_prefix = cache_path_components(@cachebustable.delete(:path))[0]
+      bustable_keys = Viki.cache.keys("#{cache_path_prefix}*")
+      Viki.cache.del(*bustable_keys) unless bustable_keys.empty?
     end
 
     # Instead of using attr_reader, use a method so that alias has a '?'
     def cachebustable?
-      !@cachebustable.empty?
+      Viki.cache && @cachebustable.key?(:path)
     end
 
     private

@@ -43,7 +43,7 @@ module Viki::Core
         block.call Viki::Core::Response.new(error, nil, self)
       else
         if body
-          if Viki.cache && !cacheable.empty?
+          if Viki.cache && !cacheable.empty? && !@url.include?("nocache=true")
             cacheSeconds = cacheable[:cache_seconds]
             public_cache = false
             # Respect timing set in Cache-Control header for stuff that's public
