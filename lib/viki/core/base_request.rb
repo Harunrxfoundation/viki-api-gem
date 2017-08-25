@@ -1,14 +1,15 @@
 module Viki::Core
   class BaseRequest
-    attr_reader :url, :body, :addon_headers, :cacheable
+    attr_reader :url, :body, :addon_headers, :cacheable,
     JSON_FORMAT = "json"
 
-    def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {})
+    def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {}, cachebustable = false)
       @cacheable = cache
       @url = url.to_s
       @format = format
       @body = body ? Oj.dump(body, mode: :compat) : nil
       @addon_headers = headers
+      @cachebustable = cachebustable && !cache.empty?
     end
 
     def queue(&block)
@@ -76,6 +77,11 @@ module Viki::Core
       parsed_url = Addressable::URI.parse(url)
       cache_key = parsed_url.path
       ["#{Viki.cache_ns}.#{cache_key}", parsed_url]
+    end
+
+    # Instead of using attr_reader, use a method so that alias has a '?'
+    def cachebustable?
+      @cachebustable
     end
 
     private

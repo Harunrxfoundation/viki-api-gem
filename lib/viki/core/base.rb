@@ -39,6 +39,14 @@ module Viki::Core
         end
       end
 
+      def is_cachebustable?
+        @_cachebustable == true
+      end
+
+      def cachebustable
+        @_cachebustable = true
+      end
+
       def cacheable_payload
         # Link the cache payload to prior _cacheable entity if present,
         # else set it as the gem's default cache_seconds
@@ -148,7 +156,11 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} updating to the API: #{uri}"
-        creator = Viki::Core::Updater.new(uri, body, headers, format)
+        if is_cacheable?
+          creator = Viki::Core::Updater.new(uri, body, headers, format, cacheable_payload, is_cachebustable?)
+        else
+          creator = Viki::Core::Updater.new(uri, body, headers, format)
+        end
         creator.queue &block
         creator
       end
