@@ -79,6 +79,14 @@ module Viki::Core
       ["#{Viki.cache_ns}.#{cache_key}", parsed_url]
     end
 
+    def cache_bust(url)
+      if Viki.cache
+        cache_path_prefix = cache_path_components(url)[0]
+        bustable_keys = Viki.cache.keys("#{cache_path_prefix}*")
+        Viki.cache.del(*bustable_keys) unless bustable_keys.empty?
+      end
+    end
+
     # Instead of using attr_reader, use a method so that alias has a '?'
     def cachebustable?
       @cachebustable

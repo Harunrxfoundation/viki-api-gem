@@ -140,7 +140,11 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} creating to the API: #{uri}"
-        creator = Viki::Core::Creator.new(uri, body, headers, format)
+        if is_cacheable?
+          creator = Viki::Core::Creator.new(uri, body, headers, format, cacheable_payload, is_cachebustable?)
+        else
+          creator = Viki::Core::Creator.new(uri, body, headers, format)
+        end
         creator.queue &block
         creator
       end
