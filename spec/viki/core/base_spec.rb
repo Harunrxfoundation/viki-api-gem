@@ -1,9 +1,12 @@
 require 'spec_helper'
 
 describe Viki::Core::Base do
+  let (:test_klass_build_path) { 'path/to/resource' }
+
   let(:test_klass) {
+    build_path = test_klass_build_path
     Class.new(described_class) do
-      path "/path/to/resource"
+      path "/#{build_path}"
       path "/manage/:an_id/resource", manage: true
     end
   }
@@ -173,6 +176,57 @@ describe Viki::Core::Base do
     end
   end
 
+  describe "#is_cachebustable?" do
+    it 'make sure that default is always not cachebustable' do
+      expect(test_klass.is_cachebustable?).to eq false
+    end
+
+    it 'make sure that default is cachebustable if no cachebustable values is sent' do
+      test_klass.cachebustable
+      expect(test_klass.is_cachebustable?).to eq true
+    end
+
+    it 'make sure that default is cachebustable if cachebustable values are sent' do
+      test_klass.cachebustable({ path: '/some/path' })
+      expect(test_klass.is_cachebustable?).to eq true
+    end
+  end
+
+  describe "#cachebustable" do
+    it 'make sure that cachebustable parameters are set when called' do
+      test_klass.cachebustable({ path: '/some/path' })
+      expect(test_klass.is_cachebustable?).to eq true
+      expect(test_klass.cachebustable_payload).to eq({ path: '/some/path' })
+    end
+
+    it 'make sure that cachebustable parameters are set when called even with no timing' do
+      test_klass.cachebustable
+      expect(test_klass.is_cachebustable?).to eq true
+      test_klass.should_receive(:build_path)
+                .with({})
+                .and_return([test_klass_build_path])
+      expect(test_klass.cachebustable_payload).to eq({ path:  "/#{test_klass_build_path}"})
+    end
+  end
+
+  describe "#cachebustable_payload" do
+    it 'returns default payload if cache bust path is not set' do
+      test_klass.cachebustable
+      test_klass.should_receive(:build_path)
+                .with({})
+                .and_return([test_klass_build_path])
+      expect(test_klass.cachebustable_payload).to eq({ path:  "/#{test_klass_build_path}"})
+    end
+
+    it 'returns immutable payload if cacheable timing is set' do
+      test_klass.cachebustable({ path: '/some/awesome/path' })
+      expect(test_klass.cachebustable_payload).to eq({ path: '/some/awesome/path' })
+      # Test mutability
+      test_klass.should_not_receive(:build_path)
+      expect(test_klass.cachebustable_payload).to eq({ path: '/some/awesome/path' })
+    end
+  end
+
   describe "#signed_uri" do
     let(:uri) { Addressable::URI.parse "http://example.com" }
     let(:body) { "" }
@@ -260,6 +314,61 @@ describe Viki::Core::Base do
       test_klass.create(options, body) do
       end
     end
+
+    it "contructs a creator when cacheable is not initialized" do
+      test_klass.cachebustable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Creator.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.create(options, body) do
+      end
+    end
+
+    it "contructs a creator when cachebustable is not initialized" do
+      test_klass.cacheable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Creator.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.create(options, body) do
+      end
+    end
+
+    it "contructs a creator when cachebustable and cacheable are initialized" do
+      test_klass.cacheable
+      test_klass.cachebustable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      test_klass.should_receive(:build_path).and_return [test_klass_build_path]
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Creator.should_receive(:new).with(uri, body, headers, 'json', {cache_seconds: 5}, {path: "/#{test_klass_build_path}"}) { double :queue => nil }
+      test_klass.create(options, body) do
+      end
+    end
+
+    it "contructs a creator when cachebustable (with path) and cacheable are initialized" do
+      test_klass.cacheable
+      test_klass.cachebustable({ path: '/hi/im/stan' })
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Creator.should_receive(:new).with(uri, body, headers, 'json', {cache_seconds: 5}, { path: '/hi/im/stan' }) { double :queue => nil }
+      test_klass.create(options, body) do
+      end
+    end
   end
 
   describe "#update" do
@@ -271,6 +380,61 @@ describe Viki::Core::Base do
       headers = {}
       test_klass.should_receive(:signed_uri).with(options, body) { uri }
       Viki::Core::Updater.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.update(options, body) do
+      end
+    end
+
+    it "contructs a updater when cacheable is not initialized" do
+      test_klass.cachebustable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Updater.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.update(options, body) do
+      end
+    end
+
+    it "contructs a updater when cachebustable is not initialized" do
+      test_klass.cacheable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Updater.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.update(options, body) do
+      end
+    end
+
+    it "contructs a updater when cachebustable and cacheable are initialized" do
+      test_klass.cacheable
+      test_klass.cachebustable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      test_klass.should_receive(:build_path).and_return [test_klass_build_path]
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Updater.should_receive(:new).with(uri, body, headers, 'json', {cache_seconds: 5}, {path: "/#{test_klass_build_path}"}) { double :queue => nil }
+      test_klass.update(options, body) do
+      end
+    end
+
+    it "contructs a updater when cachebustable (with path) and cacheable are initialized" do
+      test_klass.cacheable
+      test_klass.cachebustable({ path: '/hi/im/stan' })
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Updater.should_receive(:new).with(uri, body, headers, 'json', {cache_seconds: 5}, { path: '/hi/im/stan' }) { double :queue => nil }
       test_klass.update(options, body) do
       end
     end
@@ -299,6 +463,61 @@ describe Viki::Core::Base do
       headers = {}
       test_klass.should_receive(:signed_uri).with(options, body) { uri }
       Viki::Core::Patcher.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.patch(options, body) do
+      end
+    end
+
+    it "contructs a updater when cacheable is not initialized" do
+      test_klass.cachebustable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Patcher.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.patch(options, body) do
+      end
+    end
+
+    it "contructs a updater when cachebustable is not initialized" do
+      test_klass.cacheable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Patcher.should_receive(:new).with(uri, body, headers, 'json') { double :queue => nil }
+      test_klass.patch(options, body) do
+      end
+    end
+
+    it "contructs a updater when cachebustable and cacheable are initialized" do
+      test_klass.cacheable
+      test_klass.cachebustable
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      test_klass.should_receive(:build_path).and_return [test_klass_build_path]
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Patcher.should_receive(:new).with(uri, body, headers, 'json', {cache_seconds: 5}, {path: "/#{test_klass_build_path}"}) { double :queue => nil }
+      test_klass.patch(options, body) do
+      end
+    end
+
+    it "contructs a updater when cachebustable (with path) and cacheable are initialized" do
+      test_klass.cacheable
+      test_klass.cachebustable({ path: '/hi/im/stan' })
+      uri = double
+      options = double
+      options.should_receive(:[]).with(:format).and_return "json"
+      body = double.as_null_object
+      headers = {}
+      test_klass.should_receive(:signed_uri).with(options, body) { uri }
+      Viki::Core::Patcher.should_receive(:new).with(uri, body, headers, 'json', {cache_seconds: 5}, { path: '/hi/im/stan' }) { double :queue => nil }
       test_klass.patch(options, body) do
       end
     end

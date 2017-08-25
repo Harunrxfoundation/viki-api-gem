@@ -1,6 +1,9 @@
 module Viki::Core
   class Updater < BaseRequest
     def on_complete(error, body, headers, &block)
+      if !error && cachebustable?
+        cache_bust
+      end
       block.call Viki::Core::Response.new(error, body)
     end
 

@@ -55,8 +55,8 @@ module Viki::Core
 
         # Set the payload for _cachebustable if the class already sets it
         if opts.key?(:path)
-          cache_seconds = opts.delete(:path)
-          @_cachebustable = { path: path }
+          cur_path = opts.delete(:path)
+          @_cachebustable = { path: cur_path }
         end
       end
 
@@ -209,7 +209,11 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} patching to the API: #{uri}"
-        creator = Viki::Core::Patcher.new(uri, body, headers, format)
+        if is_cacheable? && is_cachebustable?
+          creator = Viki::Core::Patcher.new(uri, body, headers, format, cacheable_payload, cachebustable_payload(url_options))
+        else
+          creator = Viki::Core::Patcher.new(uri, body, headers, format)
+        end
         creator.queue &block
         creator
       end
