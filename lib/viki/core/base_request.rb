@@ -1,6 +1,6 @@
 module Viki::Core
   class BaseRequest
-    attr_reader :url, :body, :addon_headers, :cacheable,
+    attr_reader :url, :body, :addon_headers, :cacheable
     JSON_FORMAT = "json"
 
     def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {}, cachebustable = {})
@@ -89,7 +89,7 @@ module Viki::Core
 
     # Instead of using attr_reader, use a method so that alias has a '?'
     def cachebustable?
-      @cachebustable
+      !@cachebustable.empty?
     end
 
     private
