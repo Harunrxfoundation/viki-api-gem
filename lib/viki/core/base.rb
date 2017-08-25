@@ -39,19 +39,32 @@ module Viki::Core
         end
       end
 
-      def is_cachebustable?
-        @_cachebustable == true
-      end
-
-      def cachebustable
-        @_cachebustable = true
-      end
-
       def cacheable_payload
         # Link the cache payload to prior _cacheable entity if present,
         # else set it as the gem's default cache_seconds
         return @_cacheable if @_cacheable
         return { cache_seconds: Viki.cache_seconds }
+      end
+
+      def is_cachebustable?
+        @_is_cachebustable == true
+      end
+
+      def cachebustable(opts = {})
+        @_is_cachebustable = true
+
+        # Set the payload for _cachebustable if the class already sets it
+        if opts.key?(:path)
+          cache_seconds = opts.delete(:path)
+          @_cachebustable = { path: path }
+        end
+      end
+
+      def cachebustable_payload(params = {})
+        # Link the cachebustable payload to built path if a default path is not
+        # provided
+        return @_cachebustable if @_cachebustable
+        return { path: build_path(params) }
       end
 
       def use_ssl
@@ -140,8 +153,8 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} creating to the API: #{uri}"
-        if is_cacheable?
-          creator = Viki::Core::Creator.new(uri, body, headers, format, cacheable_payload, is_cachebustable?)
+        if is_cacheable? && is_cachebustable?
+          creator = Viki::Core::Creator.new(uri, body, headers, format, cacheable_payload, cachebustable_payload(url_options))
         else
           creator = Viki::Core::Creator.new(uri, body, headers, format)
         end
@@ -160,8 +173,8 @@ module Viki::Core
         format = get_format(url_options)
         uri = signed_uri(url_options.dup, body)
         Viki.logger.debug "#{self.name} updating to the API: #{uri}"
-        if is_cacheable?
-          creator = Viki::Core::Updater.new(uri, body, headers, format, cacheable_payload, is_cachebustable?)
+        if is_cacheable? && is_cachebustable?
+          creator = Viki::Core::Updater.new(uri, body, headers, format, cacheable_payload, cachebustable_payload(url_options))
         else
           creator = Viki::Core::Updater.new(uri, body, headers, format)
         end

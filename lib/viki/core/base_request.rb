@@ -3,13 +3,13 @@ module Viki::Core
     attr_reader :url, :body, :addon_headers, :cacheable,
     JSON_FORMAT = "json"
 
-    def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {}, cachebustable = false)
+    def initialize(url, body = nil, headers = {}, format=JSON_FORMAT, cache = {}, cachebustable = {})
       @cacheable = cache
       @url = url.to_s
       @format = format
       @body = body ? Oj.dump(body, mode: :compat) : nil
       @addon_headers = headers
-      @cachebustable = cachebustable && !cache.empty?
+      @cachebustable = cachebustable
     end
 
     def queue(&block)
@@ -79,9 +79,9 @@ module Viki::Core
       ["#{Viki.cache_ns}.#{cache_key}", parsed_url]
     end
 
-    def cache_bust(url)
-      if Viki.cache
-        cache_path_prefix = cache_path_components(url)[0]
+    def cache_bust
+      if Viki.cache && @cachebustable.key?(:path)
+        cache_path_prefix = cache_path_components(@cachebustable.delete(:path))[0]
         bustable_keys = Viki.cache.keys("#{cache_path_prefix}*")
         Viki.cache.del(*bustable_keys) unless bustable_keys.empty?
       end
