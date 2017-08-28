@@ -44,5 +44,65 @@ describe Viki::Core::Creator do
       end
     end
 
+    describe "cache busting" do
+      let(:cache_bust_path) { '/highlander/javanese' }
+      let(:cache_ns) { 'some_namespace' }
+      let(:cacheable_creator) { Viki::Core::Creator.new("http://example.com/path", content, {}, 'json', { cache_seconds: 5 }, { path: cache_bust_path }) }
+      let(:cache_keys) { ['/highlander/javanese/1', '/highlander/javanese/2', '/highlander/javanese/3'] }
+
+      let(:cache) do
+        {}.tap do |c|
+          def c.keys(query)
+          end
+
+          def c.del(*k)
+          end
+        end
+      end
+
+      before do
+        Viki.stub(:cache).and_return(cache)
+        Viki.stub(:cache_ns).and_return(cache_ns)
+      end
+
+      describe 'does not cache bust' do
+        it 'if cachebustable option is not set' do
+          creator.queue do |response|
+          end
+          creator.should_not_receive(:cache_bust)
+        end
+
+        describe 'if route results in an error' do
+          let(:content) { {"error" => "an error occurred", "vcode" => 123} }
+          let(:status) { 401 }
+
+          it do
+            cacheable_creator.queue do |response|
+            end
+            cacheable_creator.should_not_receive(:cache_bust)
+          end
+        end
+      end
+
+      it 'cache bust' do
+        cacheable_creator.queue do |response|
+        end
+        cacheable_creator.should_receive(:cache_bust).with(no_args)
+      end
+
+      it 'cache bust with constituent keys retrieval for delete' do
+        cacheable_creator.queue do |response|
+        end
+        Viki.cache.should_receive(:keys).with("#{cache_ns}.#{cache_bust_path}*").and_return(cache_keys)
+        Viki.cache.should_receive(:del).with(*cache_keys).and_return(nil)
+      end
+
+      it 'cache bust with no keys to delete' do
+        cacheable_creator.queue do |response|
+        end
+        Viki.cache.should_receive(:keys).with("#{cache_ns}.#{cache_bust_path}*").and_return([])
+        Viki.cache.should_not_receive(:del).with(*cache_keys)
+      end
+    end
   end
 end
