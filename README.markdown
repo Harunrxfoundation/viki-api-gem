@@ -1118,8 +1118,18 @@ Viki::User.async_stub(....).with(....).and_yield(...)
 Only works with built-in RSpec mock framwork
 
 
+Releasing new version
+---------
+Steps to release new version:
+
+* Update version number in `version.rb`
+* Run `rake release`. This will update the version number in Gemfile.lock.
+* Credentials are available on Lastpass under the `web@viki.com` account
+
 Changelog
 ---------
+* 5.1.0
+  * Deprecate Viki:Container.recommendations and Viki::Video.recommendations
 * 5.0.8
   * Remove cacheable logic on PurchaseablePlans
 * 5.0.7
