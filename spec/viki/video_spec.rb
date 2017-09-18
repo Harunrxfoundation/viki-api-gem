@@ -10,14 +10,6 @@ describe Viki::Video, api: true do
   #   end
   # end
 
-  # it "fetches recommendations for episode 1 of BoF" do
-  #   resp = stub
-  #   Viki::Video.should_receive(:fetch).with(recommended_for: '44699v').and_yield(resp)
-  #   Viki::Video.recommendations("44699v") do |response|
-  #     response.should == resp
-  #   end
-  # end
-
   it "create videos via containers/:container_id/videos" do
     stub_api 'containers/42c/videos.json', json_fixture(:video), {method: :post, api_version: "v4"}
     described_class.create({container_id: "42c"}, {}) do |response|
