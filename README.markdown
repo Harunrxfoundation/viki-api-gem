@@ -1124,7 +1124,6 @@ Steps to release new version:
 
 * Update version number in `version.rb`
 * Run `rake release`. This will update the version number in Gemfile.lock.
-* Credentials are available on Lastpass under the `web@viki.com` account
 
 Changelog
 ---------
