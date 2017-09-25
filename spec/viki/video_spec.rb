@@ -46,8 +46,8 @@ describe Viki::Video, api: true do
   end
 
   it "fetches drm for video" do
-    stub_api 'videos/42v/drm.json', json_fixture(:video_drm), method: :get, api_version: 'v5', params: { dt: 'dt1,dt2,dt3'}
-    described_class.drm('42v', 'dt1,dt2,dt3') do |response|
+    stub_api 'videos/42v/drms.json', json_fixture(:video_drm), method: :get, api_version: 'v5', params: { dt: 'dt1,dt2,dt3'}
+    described_class.fetch_drm('42v', 'dt1,dt2,dt3') do |response|
       drm = response.value
       expect(drm).to be_a_kind_of(Hash)
       expect(drm.keys).to include('fairplay_certificate')
