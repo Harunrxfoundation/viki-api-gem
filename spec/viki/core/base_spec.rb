@@ -331,9 +331,25 @@ describe Viki::Core::Base do
         end
       end
 
-      it 'use_ssl is called' do
-        Viki::Core::Base.use_ssl
-        expect(Viki::Core::Base.is_ssl_enabled?).to eq true
+      describe 'use_ssl is called' do
+        it 'without any special config' do
+          Viki::Core::Base.use_ssl
+          expect(Viki::Core::Base.is_ssl_enabled?).to eq true
+        end
+
+        it 'with force_class_http_protocol disabled' do
+          Viki.should_receive(:force_http_protocol).and_return(false)
+          Viki::Core::Base.use_ssl
+          expect(Viki::Core::Base._ssl).to eq true
+          expect(Viki::Core::Base.is_ssl_enabled?).to eq true
+        end
+
+        it 'with force_class_http_protocol enabled' do
+          Viki.should_receive(:force_http_protocol).and_return(true)
+          Viki::Core::Base.use_ssl
+          expect(Viki::Core::Base._ssl).to eq false
+          expect(Viki::Core::Base.is_ssl_enabled?).to eq false
+        end
       end
 
       it 'use_ssl is not called' do

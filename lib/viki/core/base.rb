@@ -47,7 +47,10 @@ module Viki::Core
       end
 
       def use_ssl
-        @_ssl = true
+        # Only during development, we set this config to ensure that we can test
+        # individual classes inheriting from this class without ssl being
+        # enabled individually
+        @_ssl = !Viki.force_http_protocol
       end
 
       def is_ssl_enabled?

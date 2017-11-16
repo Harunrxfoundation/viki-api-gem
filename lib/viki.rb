@@ -10,7 +10,8 @@ require 'base64'
 module Viki
   class << self
     attr_accessor :salt, :app_id, :domain, :manage, :logger, :user_ip, :user_token, :addon_headers, :signer,
-                  :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :hydra_options, :ssl
+                  :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :hydra_options, :ssl,
+                  :force_http_protocol
   end
 
   def self.run
@@ -43,12 +44,17 @@ module Viki
     @cache_seconds = configurator.cache_seconds
     @hydra_options = {max_concurrency: configurator.max_concurrency, pipelining: configurator.pipelining}
     @ssl = configurator.ssl
+    # Only in development environment
+    if ENV.fetch('RAILS_ENV', 'no-environment') == 'development'
+      @force_http_protocol = configurator.force_http_protocol
+    end
+
     Typhoeus::Config.memoize = configurator.memoize
     nil
   end
 
   def self.is_ssl_enabled?
-    @ssl
+    @ssl && !@force_http_protocol
   end
 
   def self.hydra
@@ -61,7 +67,7 @@ module Viki
 
   class Configurator
     attr_reader :logger
-    attr_accessor :salt, :app_id, :domain, :manage, :user_ip, :user_token, :addon_headers, :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :max_concurrency, :pipelining, :memoize, :ssl
+    attr_accessor :salt, :app_id, :domain, :manage, :user_ip, :user_token, :addon_headers, :timeout_seconds, :timeout_seconds_post, :cache, :cache_ns, :cache_seconds, :max_concurrency, :pipelining, :memoize, :ssl, :force_http_protocol
 
     def logger=(v)
       @logger.level = Viki::Logger::FATAL if v.nil?
@@ -86,6 +92,7 @@ module Viki
       @pipelining = false
       @memoize = true
       @ssl = false
+      @force_http_protocol = false
     end
   end
 end

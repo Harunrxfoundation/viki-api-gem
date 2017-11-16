@@ -71,6 +71,60 @@ describe Viki do
       expect(Viki.is_ssl_enabled?).to eq true
     end
 
+    describe 'initializes with ssl option' do
+      it 'and development - forced http protocol as true' do
+        ENV.stub(:fetch).with('RAILS_ENV', 'no-environment').and_return('development')
+
+        Viki.configure do |c|
+          c.ssl = true
+          c.force_http_protocol = true
+        end
+
+        expect(Viki.is_ssl_enabled?).to eq false
+      end
+
+      it 'and development - forced http protocol as false' do
+        ENV.stub(:fetch).with('RAILS_ENV', 'no-environment').and_return('development')
+
+        Viki.configure do |c|
+          c.ssl = true
+          c.force_http_protocol = false
+        end
+
+        expect(Viki.is_ssl_enabled?).to eq true
+      end
+
+      it 'and production - forced http protocol as true' do
+        ENV.stub(:fetch).with('RAILS_ENV', 'no-environment').and_return('production')
+
+        Viki.configure do |c|
+          c.ssl = true
+          c.force_http_protocol = true
+        end
+
+        expect(Viki.is_ssl_enabled?).to eq true
+      end
+
+      it 'and production - forced http protocol as false' do
+        ENV.stub(:fetch).with('RAILS_ENV', 'no-environment').and_return('production')
+
+        Viki.configure do |c|
+          c.ssl = true
+          c.force_http_protocol = false
+        end
+
+        expect(Viki.is_ssl_enabled?).to eq true
+      end
+    end
+
+    it 'initializes without ssl option' do
+      Viki.configure do |c|
+        c.ssl = false
+      end
+
+      expect(Viki.is_ssl_enabled?).to eq false
+    end
+
     it 'initializes without ssl option' do
       Viki.configure do |c|
         c.ssl = false
