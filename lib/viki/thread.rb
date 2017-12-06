@@ -1,5 +1,4 @@
 class Viki::Thread < Viki::Core::Base
-  cacheable
   BULK_CREATE='bulk_create'
   path "/users/:user_id/threads"
   path "/users/:user_id/threads/bulk_create", name: BULK_CREATE
